@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "183949458364",
+    "project_id": "axiom-serviceprovider",
+    "storage_bucket": "axiom-serviceprovider.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183949458364:android:b0a73e494862e57bf489b9",
+        "android_client_info": {
+          "package_name": "com.example.service_provider"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKLfZPM93AG-qp5rNxVQ84ZA7Xx_ZZYMg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
