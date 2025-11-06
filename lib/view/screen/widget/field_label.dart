@@ -4,9 +4,9 @@ class FieldLabel extends StatelessWidget {
   final String text;
 
   const FieldLabel( {
-    Key? key,
+    super.key,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

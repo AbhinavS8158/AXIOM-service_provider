@@ -1,17 +1,22 @@
-// lib/service/rent_property_service.dart
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:service_provider/model/properycard_form_model.dart';
 
 class SellPropertyServices {
   final _sellCollection = FirebaseFirestore.instance.collection('sell_property');
 
   Stream<List<PropertycardFormModel>> getSellProperties() {
-    return _sellCollection.snapshots().map((snapshot) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
+    if (uid == null) {
+      // Return empty list if no user is logged in
+      return Stream.value([]);
+    }
+
+    return _sellCollection.where('uid', isEqualTo: uid).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        final data = doc.data() ;
+        final data = doc.data();
         return PropertycardFormModel(
-         
           name: data['name'] ?? '',
           propertyType: data['propertyType'] ?? '',
           photoPath: List<String>.from(data['photoPath'] ?? []),
@@ -25,6 +30,8 @@ class SellPropertyServices {
           amenities: List<Map<String, dynamic>>.from(data['amenities'] ?? []),
           bathroom: data['bathroom'] ?? '',
           bedroom: data['bedroom'] ?? '',
+            status: data['status'] ?? '0',
+          id: doc.id, // Store document ID
         );
       }).toList();
     });

@@ -25,7 +25,7 @@ class PhotoPickerProviderPg extends ChangeNotifier {
       
       if (pickedFile != null) {
      final imageFile=File(pickedFile.path);
-     final imageUrl=await _cloudinaryService.uploadImage(imageFile);
+     await _cloudinaryService.uploadImage(imageFile);
      _images.add(imageFile);
         notifyListeners();
       }
@@ -54,7 +54,7 @@ class PhotoPickerProviderPg extends ChangeNotifier {
       if (filesToAdd.isNotEmpty) {
         for(var pickedFile in filesToAdd){
           final imageFile=File(pickedFile.path);
-          final imageUrl =await _cloudinaryService.uploadImage(imageFile);
+          await _cloudinaryService.uploadImage(imageFile);
           _images.add(imageFile);
         }
         notifyListeners();

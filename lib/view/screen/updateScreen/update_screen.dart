@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:service_provider/controller/cloudinary/cloudinary.dart';
 import 'package:service_provider/controller/provider/amenity_rental_provider.dart';
 import 'package:service_provider/controller/provider/location_provider.dart';
-import 'package:service_provider/controller/provider/photo_picker_provier.dart';
+import 'package:service_provider/controller/provider/photo_picker_provider.dart';
 import 'package:service_provider/controller/provider/property_type_.dropdown.dart';
 import 'package:service_provider/controller/provider/rental_form_provider.dart';
 import 'package:service_provider/model/properycard_form_model.dart';
@@ -16,6 +16,7 @@ import 'package:service_provider/view/screen/widget/dropdown_furnished.dart';
 import 'package:service_provider/view/screen/widget/dropdown_powerbackup.dart';
 import 'package:service_provider/view/screen/widget/dropdown_propery_type.dart';
 import 'package:service_provider/view/screen/widget/field_label.dart';
+import 'package:service_provider/view/screen/widget/location_input_widget.dart';
 import 'package:service_provider/view/screen/widget/section_header.dart';
 import 'package:service_provider/view/screen/widget/textfield.dart';
 import 'package:service_provider/view/screen/widget/update_photo.dart';
@@ -48,7 +49,7 @@ class UpdateRentalForm extends StatelessWidget {
       listen: false,
     );
 
-    // Pre-fill controllers and selections
+
     rentalFormProvider.nameController.text = property.name;
     rentalFormProvider.phonenumController.text = property.phoneNumber;
     rentalFormProvider.emailController.text = property.email;
@@ -56,7 +57,7 @@ class UpdateRentalForm extends StatelessWidget {
     rentalFormProvider.amountcontroller.text = property.amount.toString();
     locationProvider.locationController.text = property.location;
 
-    final properytype = propertyTypeProvider.selectedPropertyType.toString();
+    // final properytype = propertyTypeProvider.selectedPropertyType.toString();
 
     final formKey = rentalFormProvider.formKey;
 
@@ -95,22 +96,9 @@ class UpdateRentalForm extends StatelessWidget {
                       const SizedBox(height: 16),
                       FieldLabel(text: 'Photos'),
                       UpdatePhoto(property: property),
-                      const SizedBox(height: 16),
-                      FieldLabel(text: 'Location'),
-                      CustomTextField(
-                        controller: locationProvider.locationController,
-                        hint: 'Tap to get Location',
-                        icon: Icons.location_on,
-                        readOnly: true,
-                        onPressed:
-                            () async =>
-                                await locationProvider.fetchCurrentLocation(),
-                        validator:
-                            (value) =>
-                                value == null || value.isEmpty
-                                    ? 'Please fetch location'
-                                    : null,
-                      ),
+                     const SizedBox(height: 16),
+const FieldLabel(text: 'Location'),
+const LocationInputWidget(),
                       const SizedBox(height: 16),
                       FieldLabel(text: 'Contact Information'),
                       CustomTextField(
@@ -207,18 +195,21 @@ class UpdateRentalForm extends StatelessWidget {
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         try {
+
                           List<String> imageUrls = [];
+                     
                           if (photoPickerProvider.images.isEmpty) {
                             imageUrls = property.photoPath;
                           } else {
                             for (var image in photoPickerProvider.images) {
                               String url = await CloudinaryService()
                                   .uploadImage(image);
+                                  
                               imageUrls.add(url);
                             }
                           }
 
-                          // set all fields
+          
 
                           rentalFormProvider.setName(
                             rentalFormProvider.nameController.text,
@@ -272,6 +263,7 @@ class UpdateRentalForm extends StatelessWidget {
                           );
                           await rentalFormProvider.update(property.id!);
 
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Property updated successfully!'),
@@ -279,8 +271,10 @@ class UpdateRentalForm extends StatelessWidget {
                             ),
                           );
 
-                          Navigator.pop(context);
+                          // ignore: use_build_context_synchronously
+                          Navigator.pop(context,property);
                         } catch (e) {
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Error: $e'),

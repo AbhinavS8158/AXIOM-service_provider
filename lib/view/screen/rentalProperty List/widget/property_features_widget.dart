@@ -5,6 +5,7 @@ import 'package:service_provider/model/properycard_form_model.dart';
 
 class PropertyFeaturesCard extends StatelessWidget {
   final PropertycardFormModel property;
+  // ignore: use_super_parameters
   const PropertyFeaturesCard({Key? key, required this.property, }) : super(key: key);
   
   @override
@@ -18,8 +19,8 @@ class PropertyFeaturesCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildInfoColumn(Icons.bedroom_parent, '${property.bedroom}', 'Bedrooms'),
-            _buildInfoColumn(Icons.bathroom, '${property.bathroom}', 'Bathrooms'),
+            _buildInfoColumn(Icons.bedroom_parent, property.bedroom, 'Bedrooms'),
+            _buildInfoColumn(Icons.bathroom, property.bathroom, 'Bathrooms'),
             _buildInfoColumn(Icons.chair, property.furnished, 'Furnished'),
           ],
         ),

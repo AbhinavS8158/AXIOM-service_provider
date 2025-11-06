@@ -10,5 +10,10 @@ class AppColor {
   static const Color login =Color(0xFF3A6A5E);
   static final Color fill=Colors.grey[100]!;
   static const Color forgot = Colors.deepPurple;
-  static const Color login_bt=Color(0xFFEFBE8E);
+  static const Color loginbt=Color(0xFFEFBE8E);
+  static final Color amber=Colors.amber;
+static final Color grey = Colors.grey.shade600;
+static final Color red=Color(0xFFDC2626);
+static final Color transperent=Colors.transparent;
+static final Color pink=Color.fromARGB(255, 169, 106, 224);
 }

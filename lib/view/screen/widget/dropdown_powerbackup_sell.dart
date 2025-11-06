@@ -10,22 +10,23 @@ class DropdownPowerbackupSell extends StatelessWidget {
     return Consumer<PropertyTypeProviderSell>(
       builder: (context, provider, _) {
         return DropdownButtonFormField<String>(
-          value: provider.powerbackup?.isEmpty ?? true ? null : provider.powerbackup,
+          value:
+              provider.powerbackup?.isEmpty ?? true
+                  ? null
+                  : provider.powerbackup,
           decoration: InputDecoration(
-            hintText:  'Powerbackup',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8 )
-            ),
+            hintText: 'Powerbackup',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
             filled: true,
-            fillColor: Colors.grey[100]
+            fillColor: Colors.grey[100],
           ),
           items:
               [
-               'Full Backup',
-               'Partial Backup',
-               'Invetor Backup',
-               'Generator Backup',
-               'None'
+                'Full Backup',
+                'Partial Backup',
+                'Invetor Backup',
+                'Generator Backup',
+                'None',
               ].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,

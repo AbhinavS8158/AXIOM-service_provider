@@ -4,6 +4,7 @@ import 'package:service_provider/model/properycard_form_model.dart';
 
 class AmenitiesWidget extends StatelessWidget {
   final PropertycardFormModel property;
+  // ignore: use_super_parameters
   const AmenitiesWidget({Key? key, required this.property}) : super(key: key);
   
   @override

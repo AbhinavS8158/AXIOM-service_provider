@@ -4,6 +4,7 @@ import 'package:service_provider/model/properycard_form_model.dart';
 
 class AboutPropertyWidget extends StatelessWidget {
   final PropertycardFormModel property;
+  // ignore: use_super_parameters
   const AboutPropertyWidget({Key? key, required this.property}) : super(key: key);
   
   @override
@@ -22,7 +23,7 @@ class AboutPropertyWidget extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          property.about ?? 'No description available',
+          property.about ,
           style: TextStyle(
             fontSize: 16,
             color: Colors.grey[800],

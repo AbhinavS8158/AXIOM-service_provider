@@ -1,12 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_provider/controller/provider/rental_form_provider.dart';
 import 'package:service_provider/model/properycard_form_model.dart';
 import 'package:service_provider/view/screen/updateScreen/update_screen.dart';
 
-class Buttons extends StatelessWidget {
+class RButtons extends StatelessWidget {
   final PropertycardFormModel property;
-  const Buttons({super.key, required this.property});
+  const RButtons({super.key, required this.property});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +19,7 @@ class Buttons extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () {
+            log('upadate button clicked');
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => UpdateRentalForm(property: property,)),
@@ -58,11 +61,13 @@ class Buttons extends StatelessWidget {
                     ),
                     
               );
+              // ignore: use_build_context_synchronously
               Navigator.pop(context);
 
               // If user confirmed, proceed with deletion
               if (confirmDelete == true) {
                 await controller.deleteRentalDataById(property.id!);
+                // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Property deleted successfully'),
@@ -70,7 +75,8 @@ class Buttons extends StatelessWidget {
                 );
               }
             } else {
-              print('No document ID provided');
+              log('No document ID provided');
+            
             }
           },
 

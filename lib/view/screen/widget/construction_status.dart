@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_provider/controller/provider/property_type_provider_sell.dart';
@@ -13,19 +12,15 @@ class ConstructionStatus extends StatelessWidget {
         return DropdownButtonFormField<String>(
           value: provider.status?.isEmpty ?? true ? null : provider.status,
           decoration: InputDecoration(
-            hintText:  'Construction Status',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8 )
-            ),
+            hintText: 'Construction Status',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
             filled: true,
-            fillColor: Colors.grey[100]
+            fillColor: Colors.grey[100],
           ),
           items:
-              [
-               'Under Construction ',
-               'Partially Completed ',
-               'Completed'
-              ].map((String value) {
+              ['Under Construction ', 'Partially Completed ', 'Completed'].map((
+                String value,
+              ) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),

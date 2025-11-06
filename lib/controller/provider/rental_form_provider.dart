@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:service_provider/model/properycard_form_model.dart';
 
@@ -10,6 +13,9 @@ class RentalFormProvider extends ChangeNotifier {
   TextEditingController aboutcontroller = TextEditingController();
   TextEditingController amountcontroller = TextEditingController();
 
+  bool isLoading =false;
+  
+  String? id = FirebaseAuth.instance.currentUser?.uid;
   String? documentId;
   String name = '';
   String propertyType = '';
@@ -24,6 +30,20 @@ class RentalFormProvider extends ChangeNotifier {
   List<Map<String, dynamic>> selectedAmenities = [];
   String bathroom = '';
   String bedroom = '';
+
+Stream<PropertycardFormModel?> getPropertyStream(String id) {
+  return FirebaseFirestore.instance
+      .collection('properties')
+      .doc(id)
+      .snapshots()
+      .map((doc) =>
+          doc.exists ? PropertycardFormModel.fromJson(doc.data()!) : null);
+}
+
+
+final List<PropertycardFormModel> _properties = [];
+
+  List<PropertycardFormModel> get properties => _properties;
   
   List<String> get selectedAmenitiesList =>
       selectedAmenities.map((amenity) => amenity['name'] as String).toList();
@@ -92,7 +112,26 @@ class RentalFormProvider extends ChangeNotifier {
     bathroom = value;
     notifyListeners();
   }
-
+  PropertycardFormModel? getPropertyById(String id) {
+    try {
+      return _properties.firstWhere((p) => p.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
+ void setLoading(bool value) {
+    isLoading = value;
+    notifyListeners();
+  }
+   void resetForm() {
+    nameController.clear();
+    phonenumController.clear();
+    emailController.clear();
+    aboutcontroller.clear();
+    amountcontroller.clear();
+    isLoading = false;
+    notifyListeners();
+  }
 
 
 
@@ -128,39 +167,40 @@ void initializeFromProperty(PropertycardFormModel property) {
   furnished = property.furnished;
   powerbackup = property.powerbackup;
   selectedAmenities = property.amenities;
+ 
 
   isInitialized = true;
   notifyListeners();
 }
 
+Future<void> addtodb(BuildContext context) async {
+  try {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
 
-  Future<void> addtodb(BuildContext context) async {
-    final rentalData = PropertycardFormModel(
-      name: name,
-      propertyType: propertyType,
-      photoPath: photoPath,
-      location: location,
-      phoneNumber: phoneNumber,
-      email: email,
-      about: about,
-      amount: amount,
-      furnished: furnished,
-      powerbackup: powerbackup,
-      amenities: selectedAmenities,
-      bathroom: bathroom,
-      bedroom: bedroom,
-    );
+    if (uid == null) throw Exception("User not logged in");
 
-    final jsonData = rentalData.toJson();
-    FirebaseFirestore db = FirebaseFirestore.instance;
-
-    try {
-      DocumentReference docRef = await db.collection('rent_property').add(jsonData);
-      documentId = docRef.id;
-    } catch (e) {
-      print('Error adding rental data: $e');
-    }
+    await FirebaseFirestore.instance.collection('rent_property').add({
+      'uid': uid,
+      'name': name,
+      'propertyType': propertyType,
+      'photoPath': photoPath,
+      'location': location,
+      'phoneNumber': phoneNumber,
+      'email': email,
+      'about': about,
+      'amount': amount,
+      'furnished': furnished,
+      'powerbackup': powerbackup,
+      'selectedAmenities': selectedAmenities,
+      'bathroom': bathroom,
+      'bedroom': bedroom,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+  } catch (e) {
+    debugPrint('Error adding to Firestore: $e');
+    rethrow;
   }
+}
 
   /// ✅ DELETE FUNCTION
   Future<void> deleteRentalDataById(String documentId) async {
@@ -168,9 +208,9 @@ void initializeFromProperty(PropertycardFormModel property) {
 
     try {
       await db.collection('rent_property').doc(documentId).delete();
-      print('Rental data deleted successfully');
+      log('Rental data deleted successfully');
     } catch (e) {
-      print('Error deleting rental data: $e');
+    log('Error deleting rental data: $e');
     }
   }
 
@@ -181,6 +221,7 @@ void initializeFromProperty(PropertycardFormModel property) {
 
   final docRef = FirebaseFirestore.instance.collection('rent_property').doc(id);
   await docRef.update({
+    
     'name': name,
     'propertyType': propertyType,
     'photoPath': photoPath,

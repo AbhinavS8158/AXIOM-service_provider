@@ -1,5 +1,7 @@
 
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class PropertyTypeProvider extends ChangeNotifier {
@@ -34,14 +36,14 @@ void setBathroom(int value) {
 
   void increementbedroom(){
   _bedroom++;
-  print("Bedroom incremented to $_bedroom");
+  log("Bedroom incremented to $_bedroom");
   notifyListeners();
 }
 
 void decrementBedrooms() {
   if (_bedroom > 0) {
     _bedroom--;
-    print("Bedroom decremented to $_bedroom");
+    log("Bedroom decremented to $_bedroom");
     notifyListeners();
   }
 }
@@ -69,6 +71,7 @@ void decrementBedrooms() {
     _parking=value;
     notifyListeners();
   }
+  
   void clearSelections() {
   _selectedPropertyType = null;
   _furnished = null;

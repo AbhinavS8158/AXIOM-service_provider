@@ -5,6 +5,7 @@ class ActionButtonsWidget extends StatelessWidget {
   final VoidCallback onEditPressed;
   final VoidCallback onDeletePressed;
   
+  // ignore: use_super_parameters
   const ActionButtonsWidget({
     Key? key,
     required this.onEditPressed,

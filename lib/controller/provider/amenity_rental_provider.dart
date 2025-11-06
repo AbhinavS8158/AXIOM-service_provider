@@ -49,4 +49,7 @@ class AmenitiesProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  
 }
+

@@ -11,13 +11,11 @@ class SignUpModel {
     required this.confirmPassword,
   });
 
-  bool passwordsMatch() => password == confirmPassword;
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'username': username,
       'email': email,
-      'password': password,
-      'confirmpassword': confirmPassword,
+      'createdAt': DateTime.now(),
     };
   }
 }

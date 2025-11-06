@@ -18,21 +18,41 @@ class AmenitiesSellProvider extends ChangeNotifier {
     Amenity(name: "24x7 Security", icon: Icons.security_sharp),
   ];
 
+  bool isSyncedFromProperty = false;
+
   List<Amenity> get amenities => _amenities;
+
+  void setSelectedFromProperty(List<String> selectedNames) {
+    for (var amenity in _amenities) {
+      amenity.isSelected = selectedNames.contains(amenity.name);
+    }
+    isSyncedFromProperty = true;
+    notifyListeners();
+  }
+
+  void resetSyncFlag() {
+    isSyncedFromProperty = false;
+    notifyListeners();
+  }
 
   void toggleSelection(int index) {
     _amenities[index].isSelected = !_amenities[index].isSelected;
     notifyListeners();
   }
 
-  List<Map<String, dynamic>> getSelectedAmenities() {
+  List<String> getSelectedAmenities() {
     return _amenities
         .where((amenity) => amenity.isSelected)
-        .map((a) => {
-              'name': a.name,
-              'icon': a.icon.codePoint,
-              'fontFamily': a.icon.fontFamily,
-            })
+        .map((a) => a.name)
         .toList();
   }
+
+  void clearSelectedAmenities() {
+    for (var amenity in _amenities) {
+      amenity.isSelected = false;
+    }
+    notifyListeners();
+  }
+
+  
 }

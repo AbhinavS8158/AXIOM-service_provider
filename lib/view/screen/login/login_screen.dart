@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:service_provider/controller/provider/login_provider.dart';
+import 'package:service_provider/controller/provider/auth/login_provider.dart';
 import 'package:service_provider/utils/app_color.dart';
 import 'package:service_provider/view/screen/home%20Screen/home_screen.dart';
 import 'package:service_provider/view/screen/signup/sign_up.dart';
@@ -119,7 +119,7 @@ class LoginScreen extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () => controller.loginUser(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.login_bt,
+                    backgroundColor: AppColor.loginbt,
                     foregroundColor: AppColor.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
@@ -186,6 +186,7 @@ class LoginScreen extends StatelessWidget {
                         bool isLogged = await controller.googlelogin();
                         if (isLogged) {
                           Navigator.pushReplacement(
+                            // ignore: use_build_context_synchronously
                             context,
                             MaterialPageRoute(
                               builder: (context) => HomeScreen(),

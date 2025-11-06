@@ -14,6 +14,8 @@ class PropertycardFormModel {
   final String bedroom;
   final List<Map<String, dynamic>> amenities;
   final String? food;
+  final String? status;
+  final String?collectiontype;
 
   PropertycardFormModel({
     required this.name,
@@ -30,7 +32,9 @@ class PropertycardFormModel {
     required this.bedroom,
     required this.amenities,
     this.food,
+    this.status,
     this.id,
+    this.collectiontype,
   });
 
   Map<String, dynamic> toJson() {
@@ -50,7 +54,9 @@ class PropertycardFormModel {
       'bedroom': bedroom,
       'amenities': amenities,
       'food': food,
-    };
+      'status':'',
+      'collectiontype':collectiontype,
+          };
   }
 
   factory PropertycardFormModel.fromJson(Map<String, dynamic> json) {
@@ -70,6 +76,8 @@ class PropertycardFormModel {
       bedroom: json['bedroom'] ?? '',
       food: json['food'],
       amenities: List<Map<String, dynamic>>.from(json['amenities'] ?? []),
+   status: json['status'] ?? '',
+   collectiontype: json['collectintype']?? ''
     );
   }
 }

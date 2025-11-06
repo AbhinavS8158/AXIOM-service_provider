@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloudinary_public/cloudinary_public.dart';
@@ -15,7 +14,7 @@ class CloudinaryService {
         uploadPreset: 'my_file', 
       );
 
-      log(response.secureUrl);
+      // log(response.secureUrl);
       return response.secureUrl;
     } catch (e) {
       throw Exception('Error uploading image: $e');

@@ -61,4 +61,13 @@ class PropertyTypeProviderSell extends ChangeNotifier {
     _status=value;
     notifyListeners();
   }
+  void resetSelections() {
+    _selectedPropertyType = null;
+    _furnished = null;
+    _powerBackUp = null;
+    _status = null;
+    _bedroom = 0;
+    _bathroom = 0;
+    notifyListeners();
+  }
 }
