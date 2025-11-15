@@ -31,7 +31,8 @@ class RentPropertyService {
           bathroom: data['bathroom'] ?? '',
           bedroom: data['bedroom'] ?? '',
           id: doc.id, 
-          status: data['status'] ?? '0'// Store document ID
+          status: data['status'] ?? '0',// Store document ID
+      
         );
       }).toList();
     });

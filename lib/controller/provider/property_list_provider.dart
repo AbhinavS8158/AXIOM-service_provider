@@ -44,6 +44,7 @@ class PropertyListProvider extends ChangeNotifier {
           bathroom: data['bathrooms'] ?? 0,
           furnished: data['furnishedType'] ?? '',
           powerbackup: data['backup'] ?? '',
+       
           amenities: (data['amenities'] as List<dynamic>? ?? [])
               .map((item) => {'name': item.toString()})
               .toList(),

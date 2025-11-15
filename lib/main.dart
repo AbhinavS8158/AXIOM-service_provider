@@ -63,6 +63,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SellPropertyProvider()),
         ChangeNotifierProvider(create: (_) => PgPropertyProvider()),
         ChangeNotifierProvider(create: (_) => FilterProvider()),
+      
       ],
       child: MaterialApp(
         title: "Axiom",

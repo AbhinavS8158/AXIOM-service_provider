@@ -18,6 +18,7 @@ class PropertycardFormModel {
   final String? collectiontype;
   final String? constructionstatus;
 
+
   PropertycardFormModel({
     this.id,
     required this.name,
@@ -37,6 +38,7 @@ class PropertycardFormModel {
     this.status,
     this.collectiontype,
     this.constructionstatus,
+   
   });
 
   Map<String, dynamic> toJson() => {
@@ -58,6 +60,7 @@ class PropertycardFormModel {
         'status': status ?? 'available',
         'collectiontype': collectiontype,
         'constructionstatus': constructionstatus,
+        
       };
 
   factory PropertycardFormModel.fromJson(Map<String, dynamic> json) {
@@ -80,6 +83,7 @@ class PropertycardFormModel {
       status: json['status'] ?? 'available',
       collectiontype: json['collectiontype'] ?? '',
       constructionstatus: json['constructionstatus'] ?? '',
+     
     );
   }
 }

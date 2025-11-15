@@ -29,6 +29,7 @@ class PgPropertyServices {
             status: data['status'] ?? '0',
           id: doc.id, 
           food: data['food']??'',
+
         );
       }).toList();
     });

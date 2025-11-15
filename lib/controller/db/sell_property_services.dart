@@ -17,6 +17,7 @@ class SellPropertyServices {
       return snapshot.docs.map((doc) {
         final data = doc.data();
         return PropertycardFormModel(
+      
           name: data['name'] ?? '',
           propertyType: data['propertyType'] ?? '',
           photoPath: List<String>.from(data['photoPath'] ?? []),
