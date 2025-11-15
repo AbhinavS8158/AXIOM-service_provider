@@ -65,7 +65,7 @@ class SButtons extends StatelessWidget {
 
               // If user confirmed, proceed with deletion
               if (confirmDelete == true) {
-                await controller.deleteRentalDataById(property.id!);
+                await controller.deleteSellPropertyById(property.id!);
                 // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

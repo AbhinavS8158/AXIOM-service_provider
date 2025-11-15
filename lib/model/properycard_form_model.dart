@@ -15,9 +15,11 @@ class PropertycardFormModel {
   final List<Map<String, dynamic>> amenities;
   final String? food;
   final String? status;
-  final String?collectiontype;
+  final String? collectiontype;
+  final String? constructionstatus;
 
   PropertycardFormModel({
+    this.id,
     required this.name,
     required this.propertyType,
     required this.photoPath,
@@ -33,31 +35,30 @@ class PropertycardFormModel {
     required this.amenities,
     this.food,
     this.status,
-    this.id,
     this.collectiontype,
+    this.constructionstatus,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'propertyType': propertyType,
-      'photoPath': photoPath,
-      'location': location,
-      'phoneNumber': phoneNumber,
-      'email': email,
-      'about': about,
-      'amount': amount,
-      'furnished': furnished,
-      'powerbackup': powerbackup,
-      'bathroom': bathroom,
-      'bedroom': bedroom,
-      'amenities': amenities,
-      'food': food,
-      'status':'',
-      'collectiontype':collectiontype,
-          };
-  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'propertyType': propertyType,
+        'photoPath': photoPath,
+        'location': location,
+        'phoneNumber': phoneNumber,
+        'email': email,
+        'about': about,
+        'amount': amount,
+        'furnished': furnished,
+        'powerbackup': powerbackup,
+        'bathroom': bathroom,
+        'bedroom': bedroom,
+        'amenities': amenities,
+        'food': food,
+        'status': status ?? 'available',
+        'collectiontype': collectiontype,
+        'constructionstatus': constructionstatus,
+      };
 
   factory PropertycardFormModel.fromJson(Map<String, dynamic> json) {
     return PropertycardFormModel(
@@ -74,10 +75,11 @@ class PropertycardFormModel {
       powerbackup: json['powerbackup'] ?? '',
       bathroom: json['bathroom'] ?? '',
       bedroom: json['bedroom'] ?? '',
-      food: json['food'],
+      food: json['food']?? '',
       amenities: List<Map<String, dynamic>>.from(json['amenities'] ?? []),
-   status: json['status'] ?? '',
-   collectiontype: json['collectintype']?? ''
+      status: json['status'] ?? 'available',
+      collectiontype: json['collectiontype'] ?? '',
+      constructionstatus: json['constructionstatus'] ?? '',
     );
   }
 }

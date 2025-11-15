@@ -75,7 +75,7 @@ class CustomsheetSell extends StatelessWidget {
                           iconColor: Colors.purple.shade700, onTap:  () {
                           Navigator.pop(context);
                           Provider.of<PhotoPickerProviderSell>(context, listen: false)
-                              .pickImage(ImageSource.gallery);
+                              .pickMultipleImages();
                         },), title: 'Gallery',
                       ),
                     ),

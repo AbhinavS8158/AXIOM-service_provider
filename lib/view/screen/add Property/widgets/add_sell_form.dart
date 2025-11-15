@@ -37,7 +37,7 @@ class AddSellForm extends StatelessWidget {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          // Animated background
+          // 🌀 Animated background
           SizedBox.expand(
             child: Lottie.asset(
               'assets/animation/Animation - 1746427682309.json',
@@ -45,7 +45,8 @@ class AddSellForm extends StatelessWidget {
               repeat: true,
             ),
           ),
-          // Form content with a frosted glass effect
+
+          // 🧾 Form content
           SafeArea(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -57,7 +58,8 @@ class AddSellForm extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 20),
-                      // Basic Details Section
+
+                      // 🏠 Basic Details
                       SectionHeader(
                         title: 'Basic Details',
                         icon: Icons.villa_outlined,
@@ -68,86 +70,36 @@ class AddSellForm extends StatelessWidget {
                           children: [
                             FieldLabel(text: 'Name of the building'),
                             CustomTextField(
-                              controller:
-                                  context
-                                      .read<SellFormProvider>()
-                                      .nameController,
+                              controller: context.read<SellFormProvider>().nameController,
                               hint: "Name of the building",
                               icon: Icons.domain,
-                              validator:
-                                  (value) =>
-                                      value == null || value.isEmpty
-                                          ? 'Please enter building name'
-                                          : null,
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Please enter building name'
+                                      : null,
                             ),
                             const SizedBox(height: 16),
                             FieldLabel(text: 'Property type'),
                             const DropdownPropertyTypeSell(),
                             const SizedBox(height: 16),
-                            FieldLabel(text: 'Photos'),
                             const AddPhotoSell(),
                             const SizedBox(height: 16),
                             FieldLabel(text: 'Construction status'),
                             const ConstructionStatus(),
-                            
-const SizedBox(height: 16),
-const FieldLabel(text: 'Location'),
-const LocationInputWidget(), 
-                            // const SizedBox(height: 16),
-                            // FieldLabel(text: 'Location'),
-                            // Consumer<SellLocationProvider>(
-                            //   builder: (context, locationProvider, _) {
-                            //     return Stack(
-                            //       alignment: Alignment.centerRight,
-                            //       children: [
-                            //         CustomTextField(
-                            //           controller:
-                            //               locationProvider.locationController,
-                            //           hint: 'Tap to get Location',
-                            //           icon: Icons.location_on,
-                            //           readOnly: true,
-                            //           onPressed: () async {
-                            //             await locationProvider
-                            //                 .fetchCurrentLocation();
-                            //           },
-                            //           validator: (value) {
-                            //             if (value == null || value.isEmpty) {
-                            //               return 'Please fetch location';
-                            //             }
-                            //             return null;
-                            //           },
-                            //         ),
-                            //         if (locationProvider.isLoading)
-                            //           const Positioned(
-                            //             right: 16,
-                            //             child: SizedBox(
-                            //               width: 20,
-                            //               height: 20,
-                            //               child: CircularProgressIndicator(
-                            //                 strokeWidth: 2,
-                            //               ),
-                            //             ),
-                            //           ),
-                            //       ],
-                            //     );
-                            //   },
-                            // ),
+                            const SizedBox(height: 16),
+                            const FieldLabel(text: 'Location'),
+                            const LocationInputWidget(),
                             const SizedBox(height: 16),
                             FieldLabel(text: 'Contact Information'),
                             CustomTextField(
-                              controller:
-                                  context
-                                      .read<SellFormProvider>()
-                                      .phonenumController,
+                              controller: context.read<SellFormProvider>().phonenumController,
                               hint: 'Phone number',
                               keyboardType: TextInputType.phone,
                               icon: Icons.phone,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your phone number';
-                                } else if (!RegExp(
-                                  r'^\d{10}$',
-                                ).hasMatch(value)) {
+                                } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
                                   return 'Enter a valid 10-digit phone number';
                                 }
                                 return null;
@@ -155,10 +107,7 @@ const LocationInputWidget(),
                             ),
                             const SizedBox(height: 12),
                             CustomTextField(
-                              controller:
-                                  context
-                                      .read<SellFormProvider>()
-                                      .emailController,
+                              controller: context.read<SellFormProvider>().emailController,
                               hint: 'Email',
                               icon: Icons.email,
                               keyboardType: TextInputType.emailAddress,
@@ -176,8 +125,10 @@ const LocationInputWidget(),
                           ],
                         ),
                       ),
+
                       const SizedBox(height: 24),
-                      // Advanced Details Section
+
+                      // ⚙️ Advanced Details
                       SectionHeader(
                         title: 'Advanced Details',
                         icon: Icons.settings_outlined,
@@ -188,10 +139,7 @@ const LocationInputWidget(),
                           children: [
                             FieldLabel(text: 'About Property'),
                             CustomTextField(
-                              controller:
-                                  context
-                                      .read<SellFormProvider>()
-                                      .aboutcontroller,
+                              controller: context.read<SellFormProvider>().aboutController,
                               hint: 'About Property',
                               icon: Icons.description,
                               maxLines: 3,
@@ -199,18 +147,14 @@ const LocationInputWidget(),
                             const SizedBox(height: 16),
                             FieldLabel(text: 'Selling Price'),
                             CustomTextField(
-                              controller:
-                                  context
-                                      .read<SellFormProvider>()
-                                      .amountcontroller,
+                              controller: context.read<SellFormProvider>().amountController,
                               hint: 'Price (₹)',
                               icon: Icons.currency_rupee,
                               keyboardType: TextInputType.number,
-                              validator:
-                                  (value) =>
-                                      value == null || value.isEmpty
-                                          ? 'Please enter the selling price'
-                                          : null,
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Please enter the selling price'
+                                      : null,
                             ),
                             const SizedBox(height: 16),
                             FieldLabel(text: 'Room Configuration'),
@@ -230,8 +174,10 @@ const LocationInputWidget(),
                           ],
                         ),
                       ),
+
                       const SizedBox(height: 24),
-                      // Amenities Section
+
+                      // 🌟 Amenities
                       SectionHeader(
                         title: 'Amenities',
                         icon: Icons.star_border_outlined,
@@ -254,266 +200,199 @@ const LocationInputWidget(),
                           ],
                         ),
                       ),
+
                       const SizedBox(height: 30),
 
+                      // 🚀 Submit Button
                       Container(
                         width: double.infinity,
                         margin: const EdgeInsets.only(bottom: 30),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Colors.deepPurple, Colors.indigo],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ),
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.deepPurple.withOpacity(0.4),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Consumer<SellFormProvider>(
-                            builder: (context, sellFormProvider, _) {
-                              return ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  foregroundColor: Colors.white,
-                                  shadowColor: Colors.transparent,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
+                        child: Consumer<SellFormProvider>(
+                          builder: (context, sellFormProvider, _) {
+                            return ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.deepPurple,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                                onPressed:
-                                    sellFormProvider.isLoading
-                                        ? null
-                                        : () async {
-                                          if (formKey.currentState!
-                                              .validate()) {
-                                            try {
-                                              sellFormProvider.setLoading(true);
-
-                                              final propertyTypeProviderSell =
-                                                  context
-                                                      .read<
-                                                        PropertyTypeProviderSell
-                                                      >();
-                                              final locationProvider =
-                                                  context
-                                                      .read<
-                                                        LocationProvider
-                                                      >();
-                                              final photoPickerProvider =
-                                                  context
-                                                      .read<
-                                                        PhotoPickerProviderSell
-                                                      >();
-                                              final amenitiesProviderSell =
-                                                  context
-                                                      .read<
-                                                        AmenitiesSellProvider
-                                                      >();
-
-                                              // Validate bedroom and bathroom properties
-                                              if (propertyTypeProviderSell
-                                                          .bedroom <=
-                                                      0 ||
-                                                  propertyTypeProviderSell
-                                                          .bathroom <=
-                                                      0) {
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                      "Please select at least one bedroom and bathroom",
-                                                    ),
-                                                    backgroundColor: Colors.red,
-                                                  ),
-                                                );
-                                                return;
-                                              }
-
-                                              // Upload images to Cloudinary
-                                              List<String> imageUrls = [];
-                                              for (var image
-                                                  in photoPickerProvider
-                                                      .images) {
-                                                try {
-                                                  String url =
-                                                      await CloudinaryService()
-                                                          .uploadImage(image);
-                                                  imageUrls.add(url);
-                                                } catch (e) {
-                                                  ScaffoldMessenger.of(
-                                                    context,
-                                                  ).showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        "Failed to upload image: $e",
-                                                      ),
-                                                      backgroundColor:
-                                                          Colors.red,
-                                                    ),
-                                                  );
-                                                  return; // Stop if image upload fails
-                                                }
-                                              }
-
-                                              // Set all provider fields
-                                              sellFormProvider
-                                                ..setName(
-                                                  sellFormProvider
-                                                      .nameController
-                                                      .text,
-                                                )
-                                                ..setPropertyType(
-                                                  propertyTypeProviderSell
-                                                          .selectedPropertyType ??
-                                                      '',
-                                                )
-                                                ..setLocation(
-                                                  locationProvider
-                                                      .locationController
-                                                      .text,
-                                                )
-                                                ..setPhone(
-                                                  sellFormProvider
-                                                      .phonenumController
-                                                      .text,
-                                                )
-                                                ..setEmail(
-                                                  sellFormProvider
-                                                      .emailController
-                                                      .text,
-                                                )
-                                                ..setAbout(
-                                                  sellFormProvider
-                                                      .aboutcontroller
-                                                      .text,
-                                                )
-                                                ..setAmount(
-                                                  sellFormProvider
-                                                      .amountcontroller
-                                                      .text,
-                                                )
-                                                ..setFurnished(
-                                                  propertyTypeProviderSell
-                                                          .furnished ??
-                                                      '',
-                                                )
-                                                ..setPowerbackup(
-                                                  propertyTypeProviderSell
-                                                          .powerbackup ??
-                                                      '',
-                                                )
-                                                // ..setStatus(
-                                                //   propertyTypeProviderSell
-                                                //           .status ??
-                                                //       '',
-                                                // )
-                                                ..setPhotoPath(imageUrls)
-                                                ..setAmenities(
-                                                  amenitiesProviderSell
-                                                      .getSelectedAmenities()
-                                                      .map((e) => {'name': e})
-                                                      .toList(),
-                                                )
-                                                ..setBedroom(
-                                                  propertyTypeProviderSell
-                                                      .bedroom
-                                                      .toString(),
-                                                )
-                                                ..setBathroom(
-                                                  propertyTypeProviderSell
-                                                      .bathroom
-                                                      .toString(),
-                                                );
-
-                                              // Add to Firestore
-                                              await sellFormProvider.addtodb(
-                                                context,
-                                              );
-
-                                              // Clear all fields after successful submission
-                                              sellFormProvider.resetForm();
-                                              photoPickerProvider.clearImages();
-                                              propertyTypeProviderSell
-                                                  .resetSelections();
-                                              locationProvider.resetLocation();
-                                              amenitiesProviderSell
-                                                  .clearSelectedAmenities();
-
-                                              // Show success message and navigate
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                    'Property Added Successfully',
-                                                  ),
-                                                ),
-                                              );
-
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder:
-                                                      (_) =>
-                                                          const SellPropertyList(),
-                                                ),
-                                              );
-                                            } catch (e) {
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                SnackBar(
-                                                  content: Text('Error: $e'),
-                                                ),
-                                              );
-                                            } finally {
-                                              sellFormProvider.setLoading(
-                                                false,
-                                              );
-                                            }
-                                          }
-                                        },
-                                child:
-                                    sellFormProvider.isLoading
-                                        ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                  Colors.white,
-                                                ),
-                                          ),
-                                        )
-                                        : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: const [
-                                            Icon(Icons.real_estate_agent),
-                                            SizedBox(width: 8),
-                                            Text(
-                                              'List Property For Sale',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                elevation: 5,
+                              ),
+                              onPressed: sellFormProvider.isLoading
+                                  ? null
+                                  : () async {
+                                      if (!formKey.currentState!.validate()) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Row(
+                                              children: const [
+                                                Icon(Icons.error_outline, color: Colors.white),
+                                                SizedBox(width: 10),
+                                                Text("Please fill all required fields correctly."),
+                                              ],
                                             ),
-                                          ],
+                                            backgroundColor: Colors.red,
+                                            behavior: SnackBarBehavior.floating,
+                                            duration: const Duration(seconds: 2),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        );
+                                        return;
+                                      }
+
+                                      try {
+                                        sellFormProvider.setLoading(true);
+
+                                        final propertyTypeProviderSell = context.read<PropertyTypeProviderSell>();
+                                        final locationProvider = context.read<LocationProvider>();
+                                        final photoPickerProvider = context.read<PhotoPickerProviderSell>();
+                                        final amenitiesProviderSell = context.read<AmenitiesSellProvider>();
+
+                                        // ✅ Validation checks
+                                        if (propertyTypeProviderSell.bedroom <= 0 ||
+                                            propertyTypeProviderSell.bathroom <= 0) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Please select at least one bedroom and bathroom"),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        if (photoPickerProvider.images.isEmpty) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Please upload at least one property photo."),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        if (locationProvider.locationController.text.isEmpty) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Please enter the property location."),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        // ✅ Upload images
+                                        List<String> imageUrls = [];
+                                        for (var image in photoPickerProvider.images) {
+                                          try {
+                                            String url = await CloudinaryService().uploadImage(image);
+                                            imageUrls.add(url);
+                                          } catch (e) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text("Failed to upload image: $e"),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            );
+                                            return;
+                                          }
+                                        }
+
+                                        // ✅ Save form data
+                                        sellFormProvider
+                                          ..setName(sellFormProvider.nameController.text)
+                                          ..setPropertyType(propertyTypeProviderSell.selectedPropertyType ?? '')
+                                          ..setLocation(locationProvider.locationController.text)
+                                          ..setPhone(sellFormProvider.phonenumController.text)
+                                          ..setEmail(sellFormProvider.emailController.text)
+                                          ..setAbout(sellFormProvider.aboutController.text)
+                                          ..setAmount(sellFormProvider.amountController.text)
+                                          ..setFurnished(propertyTypeProviderSell.furnished ?? '')
+                                          ..setPowerbackup(propertyTypeProviderSell.powerbackup ?? '')
+                                          ..setConstructionStatus(propertyTypeProviderSell.constructionstatus ?? '')
+                                          ..setPhotoPath(imageUrls)
+                                          ..setAmenities(
+                                            amenitiesProviderSell
+                                                .getSelectedAmenities()
+                                                .map((e) => {'name': e})
+                                                .toList(),
+                                          )
+                                          ..setBedroom(propertyTypeProviderSell.bedroom.toString())
+                                          ..setBathroom(propertyTypeProviderSell.bathroom.toString());
+
+                                        // ✅ Save to Firestore
+                                        await sellFormProvider.addToDb(context);
+
+                                        // ✅ Reset after success
+                                        sellFormProvider.resetForm();
+                                        photoPickerProvider.clearImages();
+                                        propertyTypeProviderSell.resetSelections();
+                                        locationProvider.resetLocation();
+                                        amenitiesProviderSell.clearSelectedAmenities();
+
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Row(
+                                              children: const [
+                                                Icon(Icons.check_circle, color: Colors.white),
+                                                SizedBox(width: 10),
+                                                Text('Property listed successfully!'),
+                                              ],
+                                            ),
+                                            backgroundColor: Colors.green,
+                                            behavior: SnackBarBehavior.floating,
+                                            duration: const Duration(seconds: 2),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        );
+
+                                        // ✅ Navigate to sell list
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => const SellPropertyList(),
+                                          ),
+                                        );
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('Error: $e'),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      } finally {
+                                        sellFormProvider.setLoading(false);
+                                      }
+                                    },
+                              child: sellFormProvider.isLoading
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      ),
+                                    )
+                                  : Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: const [
+                                        Icon(Icons.real_estate_agent),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          'List Property For Sale',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                              );
-                            },
-                          ),
+                                      ],
+                                    ),
+                            );
+                          },
                         ),
                       ),
                     ],
@@ -526,5 +405,4 @@ const LocationInputWidget(),
       ),
     );
   }
-
 }

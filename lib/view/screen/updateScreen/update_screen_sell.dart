@@ -54,8 +54,8 @@ class UpdateSellForm extends StatelessWidget {
     sellFormProvider.nameController.text = property.name;
     sellFormProvider.phonenumController.text = property.phoneNumber;
     sellFormProvider.emailController.text = property.email;
-    sellFormProvider.aboutcontroller.text = property.about;
-    sellFormProvider.amountcontroller.text = property.amount.toString();
+    sellFormProvider.aboutController.text = property.about;
+    sellFormProvider.amountController.text = property.amount.toString();
     locationProvider.locationController.text = property.location;
 
     final formKey = sellFormProvider.formKey;
@@ -144,7 +144,7 @@ const LocationInputWidget(),
                     children: [
                       FieldLabel(text: 'About Property'),
                       CustomTextField(
-                        controller: sellFormProvider.aboutcontroller,
+                        controller: sellFormProvider.aboutController,
                         hint: 'About Property',
                         icon: Icons.description,
                         maxLines: 3,
@@ -152,7 +152,7 @@ const LocationInputWidget(),
                       const SizedBox(height: 16),
                       FieldLabel(text: 'Rental Amount'),
                       CustomTextField(
-                        controller: sellFormProvider.amountcontroller,
+                        controller: sellFormProvider.amountController,
                         hint: 'Amount (₹)',
                         icon: Icons.currency_rupee,
                         keyboardType: TextInputType.number,
@@ -229,7 +229,7 @@ const LocationInputWidget(),
                             sellFormProvider.emailController.text,
                           );
                           sellFormProvider.setAbout(
-                            sellFormProvider.aboutcontroller.text,
+                            sellFormProvider.aboutController.text,
                           );
                           sellFormProvider.setFurnished(
                             propertyTypeProvider.furnished?.toString() ??
@@ -242,7 +242,7 @@ const LocationInputWidget(),
                           );
 
                           sellFormProvider.setAmount(
-                            sellFormProvider.amountcontroller.text,
+                            sellFormProvider.amountController.text,
                           );
                           sellFormProvider.setAmenities(
                             amenitiesProvider

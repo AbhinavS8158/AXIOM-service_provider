@@ -10,6 +10,7 @@ class PropertyTypeProviderSell extends ChangeNotifier {
   String? _powerBackUp="";
   String? _parking ="";
   String? _status="";
+  String? _constructionstatus="";
 
   String? get selectedPropertyType => _selectedPropertyType;
   int get bedroom=>_bedroom;
@@ -18,6 +19,7 @@ class PropertyTypeProviderSell extends ChangeNotifier {
    String? get  powerbackup => _powerBackUp;
     String? get parking => _parking;
     String? get status => _status;
+    String? get constructionstatus => _constructionstatus;
   
 
   void setPropertyType(String value) {
@@ -53,6 +55,11 @@ class PropertyTypeProviderSell extends ChangeNotifier {
     notifyListeners();
 
   }
+
+  void setConstructionStatus(String value){
+    _constructionstatus =value;
+    notifyListeners();
+  }
   void setParking(String value){
     _parking=value;
     notifyListeners();
@@ -68,6 +75,7 @@ class PropertyTypeProviderSell extends ChangeNotifier {
     _status = null;
     _bedroom = 0;
     _bathroom = 0;
+    _constructionstatus =null;
     notifyListeners();
   }
 }

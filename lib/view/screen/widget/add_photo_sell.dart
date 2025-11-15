@@ -3,10 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_provider/controller/provider/photo_picker_provider_sell.dart';
+import 'package:service_provider/model/properycard_form_model.dart';
 import 'package:service_provider/view/screen/widget/customsheet_sell.dart';
 
 class AddPhotoSell extends StatelessWidget {
-  const AddPhotoSell({super.key});
+  final PropertycardFormModel? property;
+
+  const AddPhotoSell({super.key, this.property});
 
   void _showCustomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -29,6 +32,8 @@ class AddPhotoSell extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
+
+            // Main Photo Container with overlay
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -42,16 +47,37 @@ class AddPhotoSell extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Column(
+              child: Stack(
                 children: [
-                  if (photoProvider.images.isEmpty)
-                    _buildEmptySellState(context)
-                  else
-                    _buildPhotoGrid(photoProvider),
-                  _buildAddButton(context),
+                  Column(
+                    children: [
+                      if (photoProvider.images.isEmpty)
+                        _buildEmptySellState(context)
+                      else
+                        _buildPhotoGrid(photoProvider),
+                      _buildAddButton(context),
+                    ],
+                  ),
+
+                  // 🌀 Loading overlay during upload
+                  if (photoProvider.isLoading)
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
+
             const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.only(left: 4, top: 4),
@@ -173,7 +199,9 @@ class AddPhotoSell extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.all(photoProvider.images.isEmpty ? 0 : 12),
           child: InkWell(
-            onTap: () => _showCustomSheet(context),
+            onTap: photoProvider.isLoading
+                ? null // prevent multiple uploads while loading
+                : () => _showCustomSheet(context),
             borderRadius: BorderRadius.vertical(
               bottom: const Radius.circular(12),
               top: photoProvider.images.isEmpty

@@ -9,7 +9,11 @@ class LocationProvider with ChangeNotifier {
   bool isLoading = false;
   bool isManualEntry = false;
 
-  // Toggle between manual entry and GPS location
+  // ✅ Optional: Store latitude & longitude for later use (e.g., Firestore)
+  double? latitude;
+  double? longitude;
+
+  /// ✅ Toggle between manual entry and GPS location
   void toggleLocationMode() {
     isManualEntry = !isManualEntry;
     if (isManualEntry) {
@@ -18,23 +22,26 @@ class LocationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Set manual location
+  /// ✅ Set manual location from text input
   void setManualLocation(String address) {
     locationController.text = address;
     notifyListeners();
   }
 
-  /// ✅ Fetch current location and set only **City, State**
+  /// ✅ Fetch current location and create accurate address like:
+  /// "Chakkarmoola, Niramaruthur, Tirur, Kerala"
   Future<void> fetchCurrentLocation() async {
     isLoading = true;
     notifyListeners();
 
     try {
+      // Step 1: Check if location service is enabled
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        throw Exception('Location services are disabled. Please enable location services.');
+        throw Exception('Location services are disabled. Please enable them.');
       }
 
+      // Step 2: Handle permissions
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -42,55 +49,74 @@ class LocationProvider with ChangeNotifier {
           throw Exception('Location permission denied. Please allow access.');
         }
       }
-
       if (permission == LocationPermission.deniedForever) {
         throw Exception(
           'Location permission permanently denied. Please enable it from app settings.',
         );
       }
 
-      // ✅ Get user's GPS position
+      // Step 3: Get current GPS position
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
         timeLimit: const Duration(seconds: 10),
       );
 
-      // ✅ Convert coordinates → address
+      latitude = position.latitude;
+      longitude = position.longitude;
+
+      // Step 4: Reverse geocode (coordinates → address)
       List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
       );
 
       if (placemarks.isNotEmpty) {
-        Placemark place = placemarks.first;
+        final place = placemarks.first;
 
-        // ✅ Fetch only city and state
-        String city = place.locality ?? '';
-        String state = place.administrativeArea ?? '';
+        // ✅ Extract important fields safely
+        String street = place.street ?? ''; // e.g. "Chakkarmoola"
+        String subLocality = place.subLocality ?? ''; // e.g. "Niramaruthur"
+        String locality = place.locality ?? ''; // e.g. "Tirur"
+        String district = place.subAdministrativeArea ?? ''; // e.g. "Malappuram"
+        String state = place.administrativeArea ?? ''; // e.g. "Kerala"
 
-        if (city.isEmpty && state.isEmpty) {
-          throw Exception('Could not determine your city and state.');
+        // ✅ Build full address
+        // If street or sublocality missing, skip gracefully
+        String address = [
+          street,
+          if (subLocality.isNotEmpty) subLocality,
+          if (locality.isNotEmpty) locality,
+          if (district.isNotEmpty) district,
+          if (state.isNotEmpty) state,
+        ].where((part) => part.trim().isNotEmpty).join(', ');
+
+        if (address.isEmpty) {
+          throw Exception('Unable to determine your exact address.');
         }
 
-        // ✅ Set formatted city & state
-        locationController.text = '$city, $state';
+        // ✅ Update the text field
+        locationController.text = address;
+        log("📍 Exact address: $address");
+        log("🌐 Coordinates: $latitude, $longitude");
 
-        log("📍 Detected location: $city, $state");
-        isManualEntry = false; // Switch back to GPS mode
+        isManualEntry = false;
       } else {
         throw Exception('Unable to fetch location details.');
       }
     } catch (e) {
       log("❌ Error fetching location: $e");
-      rethrow; // Let the UI handle showing a Snackbar
+      rethrow;
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
+  /// ✅ Reset location input
   void resetLocation() {
     locationController.clear();
+    latitude = null;
+    longitude = null;
     isLoading = false;
     isManualEntry = false;
     notifyListeners();

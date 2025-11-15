@@ -10,25 +10,28 @@ class ConstructionStatus extends StatelessWidget {
     return Consumer<PropertyTypeProviderSell>(
       builder: (context, provider, _) {
         return DropdownButtonFormField<String>(
-          value: provider.status?.isEmpty ?? true ? null : provider.status,
+          value: provider.constructionstatus?.isEmpty ?? true
+              ? null
+              : provider.constructionstatus,
           decoration: InputDecoration(
-            hintText: 'Construction Status',
+            hintText: 'Select Construction Status',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
             filled: true,
             fillColor: Colors.grey[100],
           ),
-          items:
-              ['Under Construction ', 'Partially Completed ', 'Completed'].map((
-                String value,
-              ) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+          items: [
+            'Under Construction',
+            'Partially Completed',
+            'Completed',
+          ].map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
           onChanged: (String? newValue) {
             if (newValue != null) {
-              provider.setStatus(newValue);
+              provider.setConstructionStatus(newValue);
             }
           },
         );

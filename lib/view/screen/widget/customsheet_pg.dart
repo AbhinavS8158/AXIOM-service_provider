@@ -11,7 +11,7 @@ class CustomsheetPg extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
@@ -42,47 +42,57 @@ class CustomsheetPg extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Select Image',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  'Select Image(s)',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 20),
+              // ROW 1: Camera (Single) and Gallery (Single)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
                     Expanded(
                       child: OptionCard(
-                        title: 'Camera',
-                        model: OptionCardModel(icon: Icons.camera_alt_rounded,
-                         title: 'Camera', 
-                         color:  Colors.blue.shade100, 
-                         iconColor:  Colors.blue.shade700, onTap:  () {
-                          Navigator.pop(context);
-                          Provider.of<PhotoPickerProviderPg>(context, listen: false)
-                              .pickImage(ImageSource.camera);
-                        },),
+                        title: 'Camera (Single)',
+                        model: OptionCardModel(
+                          icon: Icons.camera_alt_rounded,
+                          title: 'Camera',
+                          color: Colors.blue.shade100,
+                          iconColor: Colors.blue.shade700,
+                          onTap: () {
+                            Navigator.pop(context);
+                            Provider.of<PhotoPickerProviderPg>(
+                              context,
+                              listen: false,
+                            ).pickImage(ImageSource.camera);
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: OptionCard(
-                        model: OptionCardModel(icon: Icons.photo_library_rounded,
-                         title: 'Gallery', color: Colors.purple.shade100,
-                          iconColor: Colors.purple.shade700, onTap:  () {
-                          Navigator.pop(context);
-                          Provider.of<PhotoPickerProviderPg>(context, listen: false)
-                              .pickImage(ImageSource.gallery);
-                        },), title: 'Gallery',
+                        title: 'Gallery (Single)',
+                        model: OptionCardModel(
+                          icon: Icons.photo_library_rounded,
+                          title: 'Gallery (Single)',
+                          color: Colors.purple.shade100,
+                          iconColor: Colors.purple.shade700,
+                          onTap: () {
+                            Navigator.pop(context);
+                            Provider.of<PhotoPickerProviderPg>(
+                              context,
+                              listen: false,
+                            ).pickMultipleImages();
+                          },
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16), // Separator
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextButton(

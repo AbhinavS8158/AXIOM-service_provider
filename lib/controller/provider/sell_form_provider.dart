@@ -6,17 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:service_provider/model/properycard_form_model.dart';
 
 class SellFormProvider extends ChangeNotifier {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
-  TextEditingController phonenumController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController aboutcontroller = TextEditingController();
-  TextEditingController amountcontroller = TextEditingController();
+  // 🧩 Controllers
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+  final TextEditingController phonenumController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController aboutController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
 
-  bool isLoading =false;
-  
+  final formKey = GlobalKey<FormState>();
+
+  // 🔧 Variables
+  bool isLoading = false;
+  bool isInitialized = false;
+
   String? id = FirebaseAuth.instance.currentUser?.uid;
   String? documentId;
+
   String name = '';
   String propertyType = '';
   List<String> photoPath = [];
@@ -27,39 +33,43 @@ class SellFormProvider extends ChangeNotifier {
   String amount = '';
   String furnished = '';
   String powerbackup = '';
-  List<Map<String, dynamic>> selectedAmenities = [];
-  String bathroom = '';
+  String constructionstatus = '';
   String bedroom = '';
+  String bathroom = '';
 
-Stream<PropertycardFormModel?> getPropertyStream(String id) {
-  return FirebaseFirestore.instance
-      .collection('properties')
-      .doc(id)
-      .snapshots()
-      .map((doc) =>
-          doc.exists ? PropertycardFormModel.fromJson(doc.data()!) : null);
-}
+  List<Map<String, dynamic>> selectedAmenities = [];
 
+  final List<PropertycardFormModel> _properties = [];
 
-final List<PropertycardFormModel> _properties = [];
-
+  // 🔹 Getters
   List<PropertycardFormModel> get properties => _properties;
-  
-  List<String> get selectedAmenitiesList =>
-      selectedAmenities.map((amenity) => amenity['name'] as String).toList();
 
+  List<String> get selectedAmenitiesList =>
+      selectedAmenities.map((e) => e['name'] as String).toList();
+
+  // 🔹 Firestore Stream for live updates
+  Stream<PropertycardFormModel?> getPropertyStream(String id) {
+    return FirebaseFirestore.instance
+        .collection('sell_property')
+        .doc(id)
+        .snapshots()
+        .map((doc) =>
+            doc.exists ? PropertycardFormModel.fromJson(doc.data()!) : null);
+  }
+
+  // 🔹 Setters
   void setName(String value) {
     name = value;
     notifyListeners();
   }
 
-  void setPropertyType(String type) {
-    propertyType = type;
+  void setPropertyType(String value) {
+    propertyType = value;
     notifyListeners();
   }
 
-  void setPhotoPath(List<String> path) {
-    photoPath = path;
+  void setPhotoPath(List<String> paths) {
+    photoPath = paths;
     notifyListeners();
   }
 
@@ -88,13 +98,18 @@ final List<PropertycardFormModel> _properties = [];
     notifyListeners();
   }
 
-  void setFurnished(String type) {
-    furnished = type;
+  void setFurnished(String value) {
+    furnished = value;
     notifyListeners();
   }
 
-  void setPowerbackup(String type) {
-    powerbackup = type;
+  void setPowerbackup(String value) {
+    powerbackup = value;
+    notifyListeners();
+  }
+
+  void setConstructionStatus(String value) {
+    constructionstatus = value;
     notifyListeners();
   }
 
@@ -112,134 +127,145 @@ final List<PropertycardFormModel> _properties = [];
     bathroom = value;
     notifyListeners();
   }
-  PropertycardFormModel? getPropertyById(String id) {
-    try {
-      return _properties.firstWhere((p) => p.id == id);
-    } catch (e) {
-      return null;
-    }
-  }
- void setLoading(bool value) {
+
+  void setLoading(bool value) {
     isLoading = value;
     notifyListeners();
   }
-   void resetForm() {
+
+  void resetForm() {
     nameController.clear();
+    locationController.clear();
     phonenumController.clear();
     emailController.clear();
-    aboutcontroller.clear();
-    amountcontroller.clear();
+    aboutController.clear();
+    amountController.clear();
+    selectedAmenities.clear();
     isLoading = false;
     notifyListeners();
   }
-
-
 
   void disposeControllers() {
     nameController.dispose();
     locationController.dispose();
     phonenumController.dispose();
     emailController.dispose();
-    aboutcontroller.dispose();
-    amountcontroller.dispose();
+    aboutController.dispose();
+    amountController.dispose();
   }
+
   @override
-void dispose() {
-  disposeControllers(); 
-  super.dispose();
-}
-
-  bool isInitialized = false;
-final formKey = GlobalKey<FormState>();
-
-void initializeFromProperty(PropertycardFormModel property) {
-  nameController.text = property.name;
-  propertyType = property.propertyType;
-  photoPath = property.photoPath;
-  location = property.location;
-  locationController.text = property.location;
-  phonenumController.text = property.phoneNumber;
-  emailController.text = property.email;
-  aboutcontroller.text = property.about;
-  amountcontroller.text = property.amount;
-  bedroom = property.bedroom;
-  bathroom = property.bathroom;
-  furnished = property.furnished;
-  powerbackup = property.powerbackup;
-  selectedAmenities = property.amenities;
- 
-
-  isInitialized = true;
-  notifyListeners();
-}
-
-Future<void> addtodb(BuildContext context) async {
-  try {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-
-    if (uid == null) throw Exception("User not logged in");
-
-    await FirebaseFirestore.instance.collection('sell_property').add({
-      'uid': uid,
-      'name': name,
-      'propertyType': propertyType,
-      'photoPath': photoPath,
-      'location': location,
-      'phoneNumber': phoneNumber,
-      'email': email,
-      'about': about,
-      'amount': amount,
-      'furnished': furnished,
-      'powerbackup': powerbackup,
-      'selectedAmenities': selectedAmenities,
-      'bathroom': bathroom,
-      'bedroom': bedroom,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-  } catch (e) {
-    debugPrint('Error adding to Firestore: $e');
-    rethrow;
+  void dispose() {
+    disposeControllers();
+    super.dispose();
   }
-}
 
-  /// ✅ DELETE FUNCTION
-  Future<void> deleteRentalDataById(String documentId) async {
-    FirebaseFirestore db = FirebaseFirestore.instance;
+  // 🧩 Initialize existing property (used for Edit)
+  void initializeFromProperty(PropertycardFormModel property) {
+    nameController.text = property.name;
+    locationController.text = property.location;
+    phonenumController.text = property.phoneNumber;
+    emailController.text = property.email;
+    aboutController.text = property.about;
+    amountController.text = property.amount;
 
+    name = property.name;
+    propertyType = property.propertyType;
+    photoPath = property.photoPath;
+    location = property.location;
+    phoneNumber = property.phoneNumber;
+    email = property.email;
+    about = property.about;
+    amount = property.amount;
+    bedroom = property.bedroom;
+    bathroom = property.bathroom;
+    furnished = property.furnished;
+    powerbackup = property.powerbackup;
+    selectedAmenities = property.amenities;
+    constructionstatus = property.constructionstatus ?? '';
+
+    isInitialized = true;
+    notifyListeners();
+  }
+
+  // 🧠 Add new Sell Property to Firestore
+  Future<void> addToDb(BuildContext context) async {
     try {
-      await db.collection('sell_property').doc(documentId).delete();
-      log('Rental data deleted successfully');
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) throw Exception("User not logged in");
+
+      const collectionName = 'sell_property';
+      setLoading(true);
+
+      await FirebaseFirestore.instance.collection(collectionName).add({
+        'uid': uid,
+        'name': name,
+        'propertyType': propertyType,
+        'photoPath': photoPath,
+        'location': location,
+        'phoneNumber': phoneNumber,
+        'email': email,
+        'about': about,
+        'amount': amount,
+        'furnished': furnished,
+        'powerbackup': powerbackup,
+        'amenities': selectedAmenities,
+        'bathroom': bathroom,
+        'bedroom': bedroom,
+        'constructionstatus': constructionstatus,
+        'collectiontype': collectionName,
+        'status': 'available',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      setLoading(false);
+      log('Property added successfully!');
     } catch (e) {
-    log('Error deleting rental data: $e');
+      log('Error adding to Firestore: $e');
+      setLoading(false);
+      rethrow;
     }
   }
 
+  // 🗑 Delete property by document ID
+  Future<void> deleteSellPropertyById(String documentId) async {
+    final db = FirebaseFirestore.instance;
+    try {
+      await db.collection('sell_property').doc(documentId).delete();
+      log('Property deleted successfully');
+    } catch (e) {
+      log('Error deleting property: $e');
+    }
+  }
 
-
+  // 🔄 Update property data
   Future<void> update(String id) async {
+    try {
+      final docRef =
+          FirebaseFirestore.instance.collection('sell_property').doc(id);
 
+      await docRef.update({
+        'name': name,
+        'propertyType': propertyType,
+        'photoPath': photoPath,
+        'location': location,
+        'phoneNumber': phoneNumber,
+        'email': email,
+        'about': about,
+        'amount': amount,
+        'furnished': furnished,
+        'powerbackup': powerbackup,
+        'amenities': selectedAmenities,
+        'bedroom': bedroom,
+        'bathroom': bathroom,
+        'constructionstatus': constructionstatus,
+      });
 
-  final docRef = FirebaseFirestore.instance.collection('sell_property').doc(id);
-  await docRef.update({
-    
-    'name': name,
-    'propertyType': propertyType,
-    'photoPath': photoPath,
-    'location': location,
-    'phoneNumber': phoneNumber,
-    'email': email,
-    'about': about,
-    'amount': amount,
-    'furnished': furnished,
-    'powerbackup': powerbackup,
-    'amenities': selectedAmenities,
-    'bedroom': bedroom,
-    'bathroom': bathroom,
-  });
-
-  notifyListeners();
-}
-
-
-
+      log('Property updated successfully');
+      notifyListeners();
+    } catch (e) {
+      log('Error updating property: $e');
+      rethrow;
+    }
+  }
 }

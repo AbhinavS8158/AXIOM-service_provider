@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_provider/controller/provider/photo_picker_provider_pg.dart';
+import 'package:service_provider/model/properycard_form_model.dart';
 import 'package:service_provider/view/screen/widget/customsheet_pg.dart';
 
-
 class AddPhotoPg extends StatelessWidget {
-  const AddPhotoPg({super.key});
+  final PropertycardFormModel? property;
+  const AddPhotoPg({super.key, this.property});
 
   void _showCustomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -30,6 +31,8 @@ class AddPhotoPg extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
+
+            // 🖼️ Main container with shadow and overlay
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -43,16 +46,37 @@ class AddPhotoPg extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Column(
+              child: Stack(
                 children: [
-                  if (photoProvider.images.isEmpty)
-                    _buildEmptyPgState(context)
-                  else
-                    _buildPhotoGrid(photoProvider),
-                  _buildAddButton(context),
+                  Column(
+                    children: [
+                      if (photoProvider.images.isEmpty)
+                        _buildEmptyPgState(context)
+                      else
+                        _buildPhotoGrid(photoProvider),
+                      _buildAddButton(context),
+                    ],
+                  ),
+
+                  // 🌀 Loading overlay while uploading
+                  if (photoProvider.isLoading)
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
+
             const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.only(left: 4, top: 4),
@@ -71,6 +95,7 @@ class AddPhotoPg extends StatelessWidget {
     );
   }
 
+  // 🏠 Empty state widget when no photos exist
   Widget _buildEmptyPgState(BuildContext context) {
     return GestureDetector(
       onTap: () => _showCustomSheet(context),
@@ -113,6 +138,7 @@ class AddPhotoPg extends StatelessWidget {
     );
   }
 
+  // 🧩 Photo grid widget
   Widget _buildPhotoGrid(PhotoPickerProviderPg photoProvider) {
     return Padding(
       padding: const EdgeInsets.all(12),
@@ -164,6 +190,7 @@ class AddPhotoPg extends StatelessWidget {
     );
   }
 
+  // ➕ Add Photo button
   Widget _buildAddButton(BuildContext context) {
     return Consumer<PhotoPickerProviderPg>(
       builder: (context, photoProvider, child) {
@@ -174,7 +201,9 @@ class AddPhotoPg extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.all(photoProvider.images.isEmpty ? 0 : 12),
           child: InkWell(
-            onTap: () => _showCustomSheet(context),
+            onTap: photoProvider.isLoading
+                ? null // Disable while uploading
+                : () => _showCustomSheet(context),
             borderRadius: BorderRadius.vertical(
               bottom: const Radius.circular(12),
               top: photoProvider.images.isEmpty

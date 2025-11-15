@@ -37,7 +37,7 @@ class AddPgForm extends StatelessWidget {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          // Animated background
+          // 🌀 Animated background
           SizedBox.expand(
             child: Lottie.asset(
               'assets/animation/Animation - 1746427682309.json',
@@ -45,7 +45,8 @@ class AddPgForm extends StatelessWidget {
               repeat: true,
             ),
           ),
-          // Form content
+
+          // 📋 Form content
           SafeArea(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -57,7 +58,8 @@ class AddPgForm extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 20),
-                      // Basic Details Section
+
+                      // 🏠 Basic Details
                       SectionHeader(
                         title: 'Basic Details',
                         icon: Icons.home_outlined,
@@ -83,29 +85,22 @@ class AddPgForm extends StatelessWidget {
                             FieldLabel(text: 'Property type'),
                             const DropdownPropertyTypePg(),
                             const SizedBox(height: 16),
-                            FieldLabel(text: 'Photos'),
                             const AddPhotoPg(),
                             const SizedBox(height: 16),
-                            
-const SizedBox(height: 16),
-const FieldLabel(text: 'Location'),
-const LocationInputWidget(), 
+                            const FieldLabel(text: 'Location'),
+                            const LocationInputWidget(),
                             const SizedBox(height: 16),
                             FieldLabel(text: 'Contact Information'),
                             CustomTextField(
                               controller:
-                                  context
-                                      .read<PgFormProvider>()
-                                      .phonenumController,
+                                  context.read<PgFormProvider>().phonenumController,
                               hint: 'Phone number',
                               keyboardType: TextInputType.phone,
                               icon: Icons.phone,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your phone number';
-                                } else if (!RegExp(
-                                  r'^\d{10}$',
-                                ).hasMatch(value)) {
+                                } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
                                   return 'Enter a valid 10-digit phone number';
                                 }
                                 return null;
@@ -114,9 +109,7 @@ const LocationInputWidget(),
                             const SizedBox(height: 12),
                             CustomTextField(
                               controller:
-                                  context
-                                      .read<PgFormProvider>()
-                                      .emailController,
+                                  context.read<PgFormProvider>().emailController,
                               hint: 'Email',
                               icon: Icons.email,
                               keyboardType: TextInputType.emailAddress,
@@ -134,8 +127,10 @@ const LocationInputWidget(),
                           ],
                         ),
                       ),
+
                       const SizedBox(height: 24),
-                      // Advanced Details Section
+
+                      // ⚙️ Advanced Details
                       SectionHeader(
                         title: 'Advanced Details',
                         icon: Icons.settings_outlined,
@@ -147,9 +142,7 @@ const LocationInputWidget(),
                             FieldLabel(text: 'About Property'),
                             CustomTextField(
                               controller:
-                                  context
-                                      .read<PgFormProvider>()
-                                      .aboutcontroller,
+                                  context.read<PgFormProvider>().aboutcontroller,
                               hint: 'About Property',
                               icon: Icons.description,
                               maxLines: 3,
@@ -161,9 +154,7 @@ const LocationInputWidget(),
                             FieldLabel(text: 'Monthly Rent'),
                             CustomTextField(
                               controller:
-                                  context
-                                      .read<PgFormProvider>()
-                                      .amountcontroller,
+                                  context.read<PgFormProvider>().amountcontroller,
                               hint: 'Amount (₹)',
                               icon: Icons.currency_rupee,
                               keyboardType: TextInputType.number,
@@ -192,8 +183,10 @@ const LocationInputWidget(),
                           ],
                         ),
                       ),
+
                       const SizedBox(height: 24),
-                      // Amenities Section
+
+                      // 🌟 Amenities
                       SectionHeader(
                         title: 'Amenities',
                         icon: Icons.star_border_outlined,
@@ -216,8 +209,10 @@ const LocationInputWidget(),
                           ],
                         ),
                       ),
+
                       const SizedBox(height: 30),
-                      // Submit Button
+
+                      // 🚀 Submit Button
                       Container(
                         width: double.infinity,
                         margin: const EdgeInsets.only(bottom: 30),
@@ -227,280 +222,206 @@ const LocationInputWidget(),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.deepPurple,
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 16),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 elevation: 5,
-                                disabledBackgroundColor: Colors.deepPurple
-                                    .withOpacity(0.5),
                               ),
-                              onPressed:
-                                  pgFormProvider.isLoading
-                                      ? null
-                                      : () async {
-                                        if (_formKey.currentState!.validate()) {
+                              onPressed: pgFormProvider.isLoading
+                                  ? null
+                                  : () async {
+                                      // ✅ Validate form
+                                      if (!_formKey.currentState!.validate()) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Row(
+                                              children: const [
+                                                Icon(Icons.error_outline,
+                                                    color: Colors.white),
+                                                SizedBox(width: 10),
+                                                Text("Please fill all required fields correctly."),
+                                              ],
+                                            ),
+                                            backgroundColor: Colors.red,
+                                            behavior: SnackBarBehavior.floating,
+                                            duration: const Duration(seconds: 2),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        );
+                                        return;
+                                      }
+
+                                      try {
+                                        pgFormProvider.setLoading(true);
+
+                                        final propertyTypeProviderPg = context.read<DropdownPgProvider>();
+                                        final locationProvider = context.read<LocationProvider>();
+                                        final photoPickerProvider = context.read<PhotoPickerProviderPg>();
+                                        final amenitiesProviderPg = context.read<AmenitiesPgProvider>();
+
+                                        // ✅ Check property details
+                                        if (propertyTypeProviderPg.bedroom <= 0 ||
+                                            propertyTypeProviderPg.bathroom <= 0) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Please select at least one bedroom and bathroom"),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        // ✅ Check photos
+                                        if (photoPickerProvider.images.isEmpty) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Please upload at least one property photo."),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        // ✅ Check location
+                                        if (locationProvider.locationController.text.isEmpty) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Please enter the property location."),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        // ✅ Upload images
+                                        List<String> imageUrls = [];
+                                        for (var image in photoPickerProvider.images) {
                                           try {
-                                            pgFormProvider.setLoading(true);
-
-                                            final propertyTypeProviderPg =
-                                                context
-                                                    .read<DropdownPgProvider>();
-                                            final locationProvider =
-                                                context
-                                                    .read<LocationProvider>();
-                                            final photoPickerProvider =
-                                                context
-                                                    .read<
-                                                      PhotoPickerProviderPg
-                                                    >();
-                                            final amenitiesProviderPg =
-                                                context
-                                                    .read<
-                                                      AmenitiesPgProvider
-                                                    >();
-
-                                            // Validate bedroom and bathroom
-                                            if (propertyTypeProviderPg
-                                                        .bedroom <=
-                                                    0 ||
-                                                propertyTypeProviderPg
-                                                        .bathroom <=
-                                                    0) {
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                    "Please select at least one bedroom and bathroom",
-                                                  ),
-                                                  backgroundColor: Colors.red,
-                                                ),
-                                              );
-                                              return;
-                                            }
-
-                                            // Upload images to Cloudinary
-                                            List<String> imageUrls = [];
-                                            for (var image
-                                                in photoPickerProvider.images) {
-                                              try {
-                                                String url =
-                                                    await CloudinaryService()
-                                                        .uploadImage(image);
-                                                imageUrls.add(url);
-                                              } catch (e) {
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                      "Failed to upload image: $e",
-                                                    ),
-                                                    backgroundColor: Colors.red,
-                                                  ),
-                                                );
-                                                return; // Stop if image upload fails
-                                              }
-                                            }
-
-                                            // Set all provider fields
-                                            pgFormProvider
-                                              ..setName(
-                                                pgFormProvider
-                                                    .nameController
-                                                    .text,
-                                              )
-                                              ..setPropertyType(
-                                                propertyTypeProviderPg
-                                                        .selectedPropertyType ??
-                                                    '',
-                                              )
-                                              ..setLocation(
-                                                locationProvider
-                                                    .locationController
-                                                    .text,
-                                              )
-                                              ..setPhone(
-                                                pgFormProvider
-                                                    .phonenumController
-                                                    .text,
-                                              )
-                                              ..setPhotoPath(imageUrls)
-                                              ..setEmail(
-                                                pgFormProvider
-                                                    .emailController
-                                                    .text,
-                                              )
-                                              ..setAbout(
-                                                pgFormProvider
-                                                    .aboutcontroller
-                                                    .text,
-                                              )
-                                              ..setFurnished(
-                                                propertyTypeProviderPg
-                                                        .furnished ??
-                                                    '',
-                                              )
-                                              ..setPowerbackup(
-                                                propertyTypeProviderPg
-                                                        .powerbackup ??
-                                                    '',
-                                              )
-                                              ..setAmount(
-                                                pgFormProvider
-                                                    .amountcontroller
-                                                    .text,
-                                              )
-                                              ..setFood(
-                                                propertyTypeProviderPg.food ??
-                                                    '',
-                                              )
-                                              ..setBathroom(
-                                                propertyTypeProviderPg.bathroom
-                                                    .toString(),
-                                              )
-                                              ..setBedroom(
-                                                propertyTypeProviderPg.bedroom
-                                                    .toString(),
-                                              )
-                                              ..setAmenities(
-                                                amenitiesProviderPg
-                                                    .getSelectedAmenities()
-                                                    .map((e) => {'name': e})
-                                                    .toList(),
-                                              );
-
-                                            // Add to Firestore
-                                            await pgFormProvider.addtodb(
-                                              context,
-                                            );
-
-                                            // Clear all fields after successful submission
-                                            pgFormProvider.resetForm();
-                                            photoPickerProvider.clearImages();
-                                            propertyTypeProviderPg
-                                                .resetSelections();
-                                            locationProvider.resetLocation();
-                                            amenitiesProviderPg
-                                                .clearSelectedAmenities();
-
-                                            // Show success message
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              SnackBar(
-                                                content: Row(
-                                                  children: const [
-                                                    Icon(
-                                                      Icons.check_circle,
-                                                      color: Colors.white,
-                                                    ),
-                                                    SizedBox(width: 10),
-                                                    Text(
-                                                      'PG property added successfully!',
-                                                    ),
-                                                  ],
-                                                ),
-                                                backgroundColor: Colors.green,
-                                                duration: const Duration(
-                                                  seconds: 2,
-                                                ),
-                                                behavior:
-                                                    SnackBarBehavior.floating,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                              ),
-                                            );
-
-                                            // Navigate with animation
-                                            Navigator.pushReplacement(
-                                              context,
-                                              PageRouteBuilder(
-                                                pageBuilder:
-                                                    (
-                                                      context,
-                                                      animation,
-                                                      secondaryAnimation,
-                                                    ) => const PgPropertList(),
-                                                transitionsBuilder: (
-                                                  context,
-                                                  animation,
-                                                  secondaryAnimation,
-                                                  child,
-                                                ) {
-                                                  const begin = Offset(
-                                                    1.0,
-                                                    0.0,
-                                                  );
-                                                  const end = Offset.zero;
-                                                  const curve =
-                                                      Curves.easeInOut;
-                                                  var tween = Tween(
-                                                    begin: begin,
-                                                    end: end,
-                                                  ).chain(
-                                                    CurveTween(curve: curve),
-                                                  );
-                                                  var offsetAnimation =
-                                                      animation.drive(tween);
-                                                  return SlideTransition(
-                                                    position: offsetAnimation,
-                                                    child: child,
-                                                  );
-                                                },
-                                                transitionDuration:
-                                                    const Duration(
-                                                      milliseconds: 500,
-                                                    ),
-                                              ),
-                                            );
+                                            String url = await CloudinaryService().uploadImage(image);
+                                            imageUrls.add(url);
                                           } catch (e) {
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
+                                            ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
-                                                content: Text('Error: $e'),
+                                                content: Text("Failed to upload image: $e"),
                                                 backgroundColor: Colors.red,
                                               ),
                                             );
-                                          } finally {
-                                            pgFormProvider.setLoading(false);
+                                            return;
                                           }
                                         }
-                                      },
-                              child:
-                                  pgFormProvider.isLoading
-                                      ? const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                Colors.white,
-                                              ),
-                                        ),
-                                      )
-                                      : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: const [
-                                          Icon(Icons.check_circle),
-                                          SizedBox(width: 8),
-                                          Text(
-                                            'Submit PG Property',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
+
+                                        // ✅ Save property details
+                                        pgFormProvider
+                                          ..setName(pgFormProvider.nameController.text)
+                                          ..setPropertyType(propertyTypeProviderPg.selectedPropertyType ?? '')
+                                          ..setLocation(locationProvider.locationController.text)
+                                          ..setPhone(pgFormProvider.phonenumController.text)
+                                          ..setPhotoPath(imageUrls)
+                                          ..setEmail(pgFormProvider.emailController.text)
+                                          ..setAbout(pgFormProvider.aboutcontroller.text)
+                                          ..setFurnished(propertyTypeProviderPg.furnished ?? '')
+                                          ..setPowerbackup(propertyTypeProviderPg.powerbackup ?? '')
+                                          ..setAmount(pgFormProvider.amountcontroller.text)
+                                          ..setFood(propertyTypeProviderPg.food ?? '')
+                                          ..setBathroom(propertyTypeProviderPg.bathroom.toString())
+                                          ..setBedroom(propertyTypeProviderPg.bedroom.toString())
+                                          ..setAmenities(
+                                            amenitiesProviderPg
+                                                .getSelectedAmenities()
+                                                .map((e) => {'name': e})
+                                                .toList(),
+                                          );
+
+                                        // ✅ Submit to DB
+                                        await pgFormProvider.addtodb(context);
+
+                                        // ✅ Clear everything
+                                        pgFormProvider.resetForm();
+                                        photoPickerProvider.clearImages();
+                                        propertyTypeProviderPg.resetSelections();
+                                        locationProvider.resetLocation();
+                                        amenitiesProviderPg.clearSelectedAmenities();
+
+                                        // ✅ Success message
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Row(
+                                              children: const [
+                                                Icon(Icons.check_circle,
+                                                    color: Colors.white),
+                                                SizedBox(width: 10),
+                                                Text('PG property added successfully!'),
+                                              ],
+                                            ),
+                                            backgroundColor: Colors.green,
+                                            behavior: SnackBarBehavior.floating,
+                                            duration: const Duration(seconds: 2),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
                                             ),
                                           ),
-                                        ],
+                                        );
+
+                                        // ✅ Navigate to PG list
+                                        Navigator.pushReplacement(
+                                          context,
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation, secondaryAnimation) =>
+                                                const PgPropertList(),
+                                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                              const begin = Offset(1.0, 0.0);
+                                              const end = Offset.zero;
+                                              const curve = Curves.easeInOut;
+                                              var tween = Tween(begin: begin, end: end)
+                                                  .chain(CurveTween(curve: curve));
+                                              return SlideTransition(
+                                                position: animation.drive(tween),
+                                                child: child,
+                                              );
+                                            },
+                                            transitionDuration:
+                                                const Duration(milliseconds: 500),
+                                          ),
+                                        );
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('Error: $e'),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      } finally {
+                                        pgFormProvider.setLoading(false);
+                                      }
+                                    },
+                              child: pgFormProvider.isLoading
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white,
+                                        ),
                                       ),
+                                    )
+                                  : Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: const [
+                                        Icon(Icons.check_circle),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          'Submit PG Property',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                             );
                           },
                         ),

@@ -31,7 +31,8 @@ class SellPropertyServices {
           bathroom: data['bathroom'] ?? '',
           bedroom: data['bedroom'] ?? '',
             status: data['status'] ?? '0',
-          id: doc.id, // Store document ID
+          id: doc.id, 
+          constructionstatus: data['constructionstatus']??'0',
         );
       }).toList();
     });

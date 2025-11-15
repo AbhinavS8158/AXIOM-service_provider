@@ -7,7 +7,7 @@ import 'package:service_provider/view/screen/widget/bottom_sheet.dart';
 class AddPhoto extends StatelessWidget {
   final PropertycardFormModel? property;
 
-  const AddPhoto({super.key,  this.property});
+  const AddPhoto({super.key, this.property});
 
   void _showCustomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -27,7 +27,7 @@ class AddPhoto extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Property Photos',
                 style: TextStyle(
                   fontSize: 16,
@@ -49,13 +49,33 @@ class AddPhoto extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Column(
+                child: Stack(
                   children: [
-                    if (photoProvider.images.isEmpty)
-                    _buildEmptyState(context)
-                    else
-                      _buildPhotoGrid(photoProvider),
-                    _buildAddButton(context),
+                    Column(
+                      children: [
+                        if (photoProvider.images.isEmpty)
+                          _buildEmptyState(context)
+                        else
+                          _buildPhotoGrid(photoProvider),
+                        _buildAddButton(context),
+                      ],
+                    ),
+
+                    // 🌀 Overlay while uploading
+                    if (photoProvider.isLoading)
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -120,7 +140,7 @@ class AddPhoto extends StatelessWidget {
     );
   }
 
-  Widget _buildPhotoGrid( PhotoPickerProvider photopicker) {
+  Widget _buildPhotoGrid(PhotoPickerProvider photopicker) {
     return Padding(
       padding: const EdgeInsets.all(12),
       child: GridView.builder(
@@ -181,7 +201,9 @@ class AddPhoto extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.all(photoProvider.images.isEmpty ? 0 : 12),
           child: InkWell(
-            onTap: () => _showCustomSheet(context),
+            onTap: photoProvider.isLoading
+                ? null // prevent multiple uploads while loading
+                : () => _showCustomSheet(context),
             borderRadius: BorderRadius.vertical(
               bottom: const Radius.circular(12),
               top: photoProvider.images.isEmpty

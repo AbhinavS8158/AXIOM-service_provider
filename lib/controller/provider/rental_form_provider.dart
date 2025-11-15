@@ -178,8 +178,9 @@ Future<void> addtodb(BuildContext context) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
     if (uid == null) throw Exception("User not logged in");
+    const CollectionName='rent_property';
 
-    await FirebaseFirestore.instance.collection('rent_property').add({
+    await FirebaseFirestore.instance.collection(CollectionName).add({
       'uid': uid,
       'name': name,
       'propertyType': propertyType,
@@ -194,7 +195,8 @@ Future<void> addtodb(BuildContext context) async {
       'selectedAmenities': selectedAmenities,
       'bathroom': bathroom,
       'bedroom': bedroom,
-      'timestamp': FieldValue.serverTimestamp(),
+      'timestamp': FieldValue.serverTimestamp(), 
+      'collectiontype':CollectionName,
     });
   } catch (e) {
     debugPrint('Error adding to Firestore: $e');
