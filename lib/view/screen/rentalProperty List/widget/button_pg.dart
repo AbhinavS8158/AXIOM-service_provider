@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_provider/controller/provider/pg_form_provider.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 import 'package:service_provider/view/screen/updateScreen/update_screen_pg.dart';
 
 class PButtons extends StatelessWidget {

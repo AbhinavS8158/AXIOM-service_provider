@@ -8,7 +8,7 @@ import 'package:service_provider/controller/provider/location_provider.dart';
 import 'package:service_provider/controller/provider/photo_picker_provider.dart';
 import 'package:service_provider/controller/provider/property_type_.dropdown.dart';
 import 'package:service_provider/controller/provider/sell_form_provider.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 import 'package:service_provider/utils/app_color.dart';
 import 'package:service_provider/view/screen/widget/amenity_grid.dart';
 import 'package:service_provider/view/screen/widget/bathroom_count.dart';
@@ -38,6 +38,7 @@ class UpdateSellForm extends StatelessWidget {
       context,
       listen: false,
     );
+    propertyTypeProvider.initializeFromProperty(property);
     final photoPickerProvider = Provider.of<PhotoPickerProvider>(
       context,
       listen: false,
@@ -260,7 +261,7 @@ const LocationInputWidget(),
                                 property.bedroom,
                           );
                           await sellFormProvider.update(property.id!);
-
+                           propertyTypeProvider.clearSelections();
                           // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

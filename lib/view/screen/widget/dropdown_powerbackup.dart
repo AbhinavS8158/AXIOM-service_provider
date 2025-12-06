@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_provider/controller/provider/property_type_.dropdown.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 
 class DropdownPowerbackup extends StatelessWidget {
   final PropertycardFormModel? property;
@@ -20,7 +20,7 @@ class DropdownPowerbackup extends StatelessWidget {
         ];
 
         // Get selected value
-        String? selectValue = property?.powerbackup?.isNotEmpty == true
+        String? selectValue = property?.powerbackup.isNotEmpty == true
             ? property!.powerbackup
             : provider.powerbackup;
 

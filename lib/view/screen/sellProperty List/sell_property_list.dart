@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_provider/controller/provider/sell_property_provider.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 import 'package:service_provider/utils/app_color.dart';
 import 'package:service_provider/view/screen/widget/bottom_navigation.dart';
 import 'package:service_provider/view/screen/widget/filter_chip_widget.dart';
@@ -304,29 +304,5 @@ class SellPropertyList extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      child: FilterChip(
-        label: Text(label),
-        selected: isSelected,
-        onSelected: (bool selected) {},
-        backgroundColor: Colors.white,
-        selectedColor: AppColor.forgot,
-        checkmarkColor: Colors.white,
-        labelStyle: TextStyle(
-          color: isSelected ? Colors.white : Colors.grey.shade600,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color: isSelected ? AppColor.forgot : Colors.grey.shade300,
-          ),
-        ),
-        elevation: isSelected ? 4 : 0,
-        shadowColor: AppColor.forgot.withOpacity(0.3),
-      ),
-    );
-  }
+ 
 }

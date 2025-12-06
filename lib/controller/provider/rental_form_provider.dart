@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 
 class RentalFormProvider extends ChangeNotifier {
   TextEditingController nameController = TextEditingController();
@@ -31,14 +31,28 @@ class RentalFormProvider extends ChangeNotifier {
   String bathroom = '';
   String bedroom = '';
 
-Stream<PropertycardFormModel?> getPropertyStream(String id) {
-  return FirebaseFirestore.instance
-      .collection('properties')
-      .doc(id)
-      .snapshots()
-      .map((doc) =>
-          doc.exists ? PropertycardFormModel.fromJson(doc.data()!) : null);
-}
+// Stream<PropertycardFormModel?> getPropertyStream(String id) {
+//   return FirebaseFirestore.instance
+//       .collection('properties')
+//       .doc(id)
+//       .snapshots()
+//       .map((doc) =>
+//           doc.exists ? PropertycardFormModel.fromJson(doc.data()!) : null);
+// }
+final _collection = FirebaseFirestore.instance.collection('rent_property');
+
+  Stream<PropertycardFormModel?> getPropertyStream(String id) {
+    return _collection.doc(id).snapshots().map((doc) {
+      if (!doc.exists) return null;
+
+      final data = doc.data()!;
+      // ✅ make sure id is included
+      return PropertycardFormModel.fromJson({
+        ...data,
+        'id': doc.id,
+      });
+    });
+  }
 
 
 final List<PropertycardFormModel> _properties = [];
@@ -172,37 +186,44 @@ void initializeFromProperty(PropertycardFormModel property) {
   isInitialized = true;
   notifyListeners();
 }
-
 Future<void> addtodb(BuildContext context) async {
   try {
     final uid = FirebaseAuth.instance.currentUser?.uid;
-
     if (uid == null) throw Exception("User not logged in");
-    const CollectionName='rent_property';
 
-    await FirebaseFirestore.instance.collection(CollectionName).add({
-      'uid': uid,
-      'name': name,
-      'propertyType': propertyType,
-      'photoPath': photoPath,
-      'location': location,
-      'phoneNumber': phoneNumber,
-      'email': email,
-      'about': about,
-      'amount': amount,
-      'furnished': furnished,
-      'powerbackup': powerbackup,
-      'selectedAmenities': selectedAmenities,
-      'bathroom': bathroom,
-      'bedroom': bedroom,
-      'timestamp': FieldValue.serverTimestamp(), 
-      'collectiontype':CollectionName,
-    });
+    const collectionName = 'rent_property';
+
+    final property = PropertycardFormModel(
+      name: name,
+      propertyType: propertyType,
+      photoPath: photoPath,
+      location: location,
+      phoneNumber: phoneNumber,
+      email: email,
+      about: about,
+      amount: amount,
+      furnished: furnished,
+      powerbackup: powerbackup,
+      bathroom: bathroom,
+      bedroom: bedroom,
+      amenities: selectedAmenities,
+      status: 'available',
+      collectiontype: collectionName,
+      // ❌ don't pass bookingstatus here → default from toJson()
+      // bookingstatus: 'not booked',
+    );
+
+    final data = property.toJson()
+      ..['uid'] = uid
+      ..['timestamp'] = FieldValue.serverTimestamp();
+
+    await FirebaseFirestore.instance.collection(collectionName).add(data);
   } catch (e) {
     debugPrint('Error adding to Firestore: $e');
     rethrow;
   }
 }
+
 
   /// ✅ DELETE FUNCTION
   Future<void> deleteRentalDataById(String documentId) async {

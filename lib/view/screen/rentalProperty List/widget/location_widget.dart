@@ -1,7 +1,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 
 class LocationWidget extends StatelessWidget {
   final PropertycardFormModel property;

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 
 class RentPropertyService {
   final _rentCollection = FirebaseFirestore.instance.collection('rent_property');
@@ -32,6 +32,7 @@ class RentPropertyService {
           bedroom: data['bedroom'] ?? '',
           id: doc.id, 
           status: data['status'] ?? '0',// Store document ID
+          bookingstatus:data['bookingstatus']??'not booked',
       
         );
       }).toList();

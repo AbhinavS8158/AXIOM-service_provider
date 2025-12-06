@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 import 'package:service_provider/utils/app_color.dart';
 import 'package:service_provider/view/screen/rentalProperty List/widget/about_property_widget.dart';
 import 'package:service_provider/view/screen/rentalProperty List/widget/amenitey_widget.dart';

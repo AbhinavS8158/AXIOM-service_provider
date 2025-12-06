@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 class PgPropertyServices {
   final _pgCollection = FirebaseFirestore.instance.collection('pg_property');
   Stream<List<PropertycardFormModel>> getPgProperties() {
@@ -29,6 +29,7 @@ class PgPropertyServices {
             status: data['status'] ?? '0',
           id: doc.id, 
           food: data['food']??'',
+          bookingstatus: data['bookingstatus']??'not booked'
 
         );
       }).toList();

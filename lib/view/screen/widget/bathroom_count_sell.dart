@@ -10,46 +10,49 @@ class BathroomCountSell extends StatelessWidget {
     final propertyTypeProvider = Provider.of<PropertyTypeProviderSell>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Bath rooms',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(width: 5),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              border: Border.all(),
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(12),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Bath rooms',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_drop_up),
-                  onPressed: propertyTypeProvider.increementbathroom,
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                  iconSize: 24,
-                ),
-                Text(
-                  propertyTypeProvider.bathroom.toString(),
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                IconButton(
-                  icon: Icon(Icons.arrow_drop_down),
-                  onPressed: propertyTypeProvider.decreementbathroom,
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                  iconSize: 24,
-                ),
-              ],
+            SizedBox(width: 5),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(),
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_drop_up),
+                    onPressed: propertyTypeProvider.increementbathroom,
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: 24,
+                  ),
+                  Text(
+                    propertyTypeProvider.bathroom.toString(),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.arrow_drop_down),
+                    onPressed: propertyTypeProvider.decreementbathroom,
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: 24,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 
 class SellFormProvider extends ChangeNotifier {
   // 🧩 Controllers
@@ -197,7 +197,7 @@ class SellFormProvider extends ChangeNotifier {
       const collectionName = 'sell_property';
       setLoading(true);
 
-      await FirebaseFirestore.instance.collection(collectionName).add({
+     final docRef = await FirebaseFirestore.instance.collection(collectionName).add({
         'uid': uid,
         'name': name,
         'propertyType': propertyType,
@@ -216,7 +216,9 @@ class SellFormProvider extends ChangeNotifier {
         'collectiontype': collectionName,
         'status': 'available',
         'timestamp': FieldValue.serverTimestamp(),
+        "bookingstatus": "not booked"
       });
+      await docRef.update({'id':docRef.id});
 
       setLoading(false);
       log('Property added successfully!');

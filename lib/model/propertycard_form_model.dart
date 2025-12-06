@@ -17,6 +17,7 @@ class PropertycardFormModel {
   final String? status;
   final String? collectiontype;
   final String? constructionstatus;
+  final String?bookingstatus;
 
 
   PropertycardFormModel({
@@ -38,6 +39,7 @@ class PropertycardFormModel {
     this.status,
     this.collectiontype,
     this.constructionstatus,
+    this.bookingstatus,
    
   });
 
@@ -60,6 +62,7 @@ class PropertycardFormModel {
         'status': status ?? 'available',
         'collectiontype': collectiontype,
         'constructionstatus': constructionstatus,
+        'bookingstatus':bookingstatus??'not booked'
         
       };
 
@@ -83,6 +86,7 @@ class PropertycardFormModel {
       status: json['status'] ?? 'available',
       collectiontype: json['collectiontype'] ?? '',
       constructionstatus: json['constructionstatus'] ?? '',
+      bookingstatus: json['bookingstatus'] ?? 'not booked',
      
     );
   }

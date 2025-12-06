@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 
 class SellPropertyServices {
   final _sellCollection = FirebaseFirestore.instance.collection('sell_property');
@@ -33,7 +33,8 @@ class SellPropertyServices {
           bedroom: data['bedroom'] ?? '',
             status: data['status'] ?? '0',
           id: doc.id, 
-          constructionstatus: data['constructionstatus']??'0',
+          constructionstatus: data['constructionstatus']??'',
+          bookingstatus: data['bookingstatus']??'not booked',
         );
       }).toList();
     });

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_provider/controller/provider/property_type_.dropdown.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 
 class BedroomCount extends StatelessWidget {
   final PropertycardFormModel? property;
@@ -11,7 +11,7 @@ class BedroomCount extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<PropertyTypeProvider>(
       builder: (context, provider, _) {
-        final int bedroomCount = provider.bedroom;
+        final  bedroomCount = provider.bedroom;
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 2),

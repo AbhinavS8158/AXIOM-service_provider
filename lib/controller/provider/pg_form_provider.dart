@@ -6,11 +6,10 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:service_provider/controller/db/pg_property_services.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 
 class PgFormProvider extends ChangeNotifier {
-  final PgPropertyServices _pgPropertyServices = PgPropertyServices();
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
@@ -145,96 +144,36 @@ Future<void> addtodb(BuildContext context) async {
     if (uid == null) throw Exception("User not logged in");
     const CollectionName='pg_property';
 
-    await FirebaseFirestore.instance.collection(CollectionName).add({
-      'uid': uid,
-      'name': name,
-      'propertyType': propertyType,
-      'photoPath': photoPath,
-      'location': location,
-      'phoneNumber': phoneNumber,
-      'email': email,         
-      'about': about,
-      'amount': amount,
-      'furnished': furnished,
-      'powerbackup': powerbackup,
-      'selectedAmenities': selectedAmenities,
-      'bathroom': bathroom,
-      'bedroom': bedroom,
-      'timestamp': FieldValue.serverTimestamp(), 
-      'collectiontype':CollectionName,
-      'food':foodavailblity
-    });
+  final docRef =  await FirebaseFirestore.instance.collection(CollectionName).add({
+  'uid': uid,
+  'name': name,
+  'propertyType': propertyType,
+  'photoPath': photoPath,
+  'location': location,
+  'phoneNumber': phoneNumber,
+  'email': email,         
+  'about': about,
+  'amount': amount,
+  'furnished': furnished,
+  'powerbackup': powerbackup,
+  'selectedAmenities': selectedAmenities,
+  'bathroom': bathroom,
+  'bedroom': bedroom,
+  'timestamp': FieldValue.serverTimestamp(), 
+  'collectiontype':CollectionName,
+  'food':foodavailblity,
+  'bookingstatus':'not booked',          // ✅ THIS IS CORRECT
+});
+
+     await docRef.update({'id': docRef.id});
+
+    log('PG property added successfully!');
   } catch (e) {
     debugPrint('Error adding to Firestore: $e');
     rethrow;
   }
 }
-  // Future<void> addtodb(BuildContext context) async {
-  //   try {
-  //     log('Bedroom: $bedroom, Bathroom: $bathroom');
-
-  //     // Validate required fields
-  //     if (name.isEmpty ||
-  //         propertyType.isEmpty ||
-  //         location.isEmpty ||
-  //         phoneNumber.isEmpty ||
-  //         email.isEmpty ||
-  //         amount.isEmpty ||
-  //         bedroom.isEmpty ||
-  //         bathroom.isEmpty ||
-  //         int.parse(bedroom) <= 0 ||
-  //         int.parse(bathroom) <= 0) {
-  //       throw Exception("All required fields must be filled, and bedroom/bathroom must be greater than 0");
-  //     }
-
-  //     final pgData = PropertycardFormModel(
-  //       id: documentId.toString(),
-  //       name: name,
-  //       propertyType: propertyType,
-  //       photoPath: photoPath,
-  //       location: location,
-  //       phoneNumber: phoneNumber,
-  //       email: email,
-  //       about: about,
-  //       amount: amount,
-  //       furnished: furnished,
-  //       powerbackup: powerbackup,
-  //       food: food,
-  //       bedroom: bedroom,
-  //       bathroom: bathroom,
-  //       amenities: selectedAmenities,
-  //     );
-
-  //     if (documentId == null) {
-  //       // Add new property
-  //       await _pgPropertyServices.addPgProperty(pgData);
-  //     } else {
-  //       // Update existing property
-  //       await _pgPropertyServices.updatePgProperty(documentId!, pgData);
-  //     }
-
-  //     // Clear form
-  //     clearForm();
-  //     notifyListeners();
-
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text(documentId == null ? "PG property added successfully" : "PG property updated successfully"),
-  //         backgroundColor: Colors.green,
-  //       ),
-  //     );
-  //   } catch (e) {
-  //     debugPrint('Error adding/updating PG property: $e');
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text("Failed to ${documentId == null ? 'add' : 'update'} PG property: $e"),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //     rethrow;
-  //   }
-  // }
-  
+ 
   
   Future<void> update(String id) async {
   log("Updating document with ID: $id");

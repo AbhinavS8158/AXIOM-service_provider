@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_provider/controller/provider/photo_picker_provider_sell.dart';
-import 'package:service_provider/model/properycard_form_model.dart';
+import 'package:service_provider/model/propertycard_form_model.dart';
 import 'package:service_provider/view/screen/widget/customsheet_sell.dart';
 
 class AddPhotoSell extends StatelessWidget {
