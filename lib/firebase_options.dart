@@ -17,29 +17,17 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -54,9 +42,49 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCKLfZPM93AG-qp5rNxVQ84ZA7Xx_ZZYMg',
-    appId: '1:183949458364:android:b0a73e494862e57bf489b9',
+    appId: '1:183949458364:android:8af160862b9a1b1bf489b9',
     messagingSenderId: '183949458364',
     projectId: 'axiom-serviceprovider',
+    storageBucket: 'axiom-serviceprovider.firebasestorage.app',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCNDkg23yoTr-E7aD2YSUWUZRh-ZPq4W-g',
+    appId: '1:183949458364:web:0653028589c30274f489b9',
+    messagingSenderId: '183949458364',
+    projectId: 'axiom-serviceprovider',
+    authDomain: 'axiom-serviceprovider.firebaseapp.com',
+    storageBucket: 'axiom-serviceprovider.firebasestorage.app',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyAtNr_EvPpJMR82tBzh0LxR6I1dEznx_Ic',
+    appId: '1:183949458364:ios:2882f341a420d7a4f489b9',
+    messagingSenderId: '183949458364',
+    projectId: 'axiom-serviceprovider',
+    storageBucket: 'axiom-serviceprovider.firebasestorage.app',
+    androidClientId: '183949458364-cfotvb72v4t1bjb7vks4o4qlbevvdvkk.apps.googleusercontent.com',
+    iosClientId: '183949458364-2phnul0ji30s4o5sh5f5taq13qloebmb.apps.googleusercontent.com',
+    iosBundleId: 'com.example.serviceProvider',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAtNr_EvPpJMR82tBzh0LxR6I1dEznx_Ic',
+    appId: '1:183949458364:ios:2882f341a420d7a4f489b9',
+    messagingSenderId: '183949458364',
+    projectId: 'axiom-serviceprovider',
+    storageBucket: 'axiom-serviceprovider.firebasestorage.app',
+    androidClientId: '183949458364-cfotvb72v4t1bjb7vks4o4qlbevvdvkk.apps.googleusercontent.com',
+    iosClientId: '183949458364-2phnul0ji30s4o5sh5f5taq13qloebmb.apps.googleusercontent.com',
+    iosBundleId: 'com.example.serviceProvider',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCNDkg23yoTr-E7aD2YSUWUZRh-ZPq4W-g',
+    appId: '1:183949458364:web:9b74fee2360c521cf489b9',
+    messagingSenderId: '183949458364',
+    projectId: 'axiom-serviceprovider',
+    authDomain: 'axiom-serviceprovider.firebaseapp.com',
     storageBucket: 'axiom-serviceprovider.firebasestorage.app',
   );
 

@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_provider/controller/cloudinary/cloudinary.dart';
@@ -27,41 +30,75 @@ class UpdatePgForm extends StatelessWidget {
 
   const UpdatePgForm({super.key, required this.property});
 
+  void _guardedInit(BuildContext context) {
+    final pgFormProvider = Provider.of<PgFormProvider>(context, listen: false);
+    final locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    final propertyTypeProvider = Provider.of<PropertyTypeProvider>(context, listen: false);
+    final photoPickerProvider = Provider.of<PhotoPickerProvider>(context, listen: false);
+    final amenitiesProvider = Provider.of<AmenitiesProvider>(context, listen: false);
+
+    try {
+      if (pgFormProvider.nameController.text.trim().isEmpty) {
+        pgFormProvider.nameController.text = property.name ?? '';
+      }
+      if (pgFormProvider.phonenumController.text.trim().isEmpty) {
+        pgFormProvider.phonenumController.text = property.phoneNumber ?? '';
+      }
+      if (pgFormProvider.emailController.text.trim().isEmpty) {
+        pgFormProvider.emailController.text = property.email ?? '';
+      }
+      if (pgFormProvider.aboutcontroller.text.trim().isEmpty) {
+        pgFormProvider.aboutcontroller.text = property.about ?? '';
+      }
+      if (pgFormProvider.amountcontroller.text.trim().isEmpty) {
+        pgFormProvider.amountcontroller.text = property.amount?.toString() ?? '';
+      }
+      if (locationProvider.locationController.text.trim().isEmpty) {
+        locationProvider.locationController.text = property.location ?? '';
+      }
+
+      try {
+        propertyTypeProvider.initializeFromProperty(property);
+      } catch (e) {
+        log('initializeFromProperty error: $e');
+      }
+
+      if (photoPickerProvider.updatePhotos.isEmpty && (property.photoPath != null && property.photoPath!.isNotEmpty)) {
+        try {
+          photoPickerProvider.setInitialPhotos(List<String>.from(property.photoPath!));
+        } catch (e) {
+          log('setInitialPhotos failed: $e');
+        }
+      }
+
+      if (amenitiesProvider.getSelectedAmenities().isEmpty && property.amenities != null && property.amenities!.isNotEmpty) {
+        try {
+          final names = property.amenities!.map((m) {
+            if (m is Map && m.containsKey('name')) return m['name'].toString();
+            return m.toString();
+          }).toList();
+          amenitiesProvider.setInitialSelectedAmenities(names);
+        } catch (e) {
+          log('setInitialSelectedAmenities failed: $e');
+        }
+      }
+    } catch (e, st) {
+      log('guardedInit error: $e\n$st');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final locationProvider = Provider.of<LocationProvider>(
-      context,
-      listen: false,
-    );
-    final propertyTypeProvider = Provider.of<PropertyTypeProvider>(
-      context,
-      listen: false,
-    );
-    propertyTypeProvider.initializeFromProperty(property);
-    final photoPickerProvider = Provider.of<PhotoPickerProvider>(
-      context,
-      listen: false,
-    );
-    final amenitiesProvider = Provider.of<AmenitiesProvider>(
-      context,
-      listen: false,
-    );
-    final pgFormProvider = Provider.of<PgFormProvider>(
-      context,
-      listen: false,
-    );
+    _guardedInit(context);
 
-
-    pgFormProvider.nameController.text = property.name;
-    pgFormProvider.phonenumController.text = property.phoneNumber;
-    pgFormProvider.emailController.text = property.email;
-    pgFormProvider.aboutcontroller.text = property.about;
-    pgFormProvider.amountcontroller.text = property.amount.toString();
-    locationProvider.locationController.text = property.location;
-
-    // final properytype = propertyTypeProvider.selectedPropertyType.toString();
+    final locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    final propertyTypeProvider = Provider.of<PropertyTypeProvider>(context, listen: false);
+    final photoPickerProvider = Provider.of<PhotoPickerProvider>(context, listen: false);
+    final amenitiesProvider = Provider.of<AmenitiesProvider>(context, listen: false);
+    final pgFormProvider = Provider.of<PgFormProvider>(context, listen: false);
 
     final formKey = pgFormProvider.formKey;
+    final cloudinary = CloudinaryService();
 
     return Scaffold(
       backgroundColor: AppColor.bg,
@@ -81,40 +118,34 @@ class UpdatePgForm extends StatelessWidget {
                 CustomCard(
                   child: Column(
                     children: [
-                      FieldLabel(text: 'Name of the building'),
+                      const FieldLabel(text: 'Name of the building'),
                       CustomTextField(
                         controller: pgFormProvider.nameController,
                         hint: 'Name of the building',
                         icon: Icons.domain,
-                        validator:
-                            (value) =>
-                                value == null || value.isEmpty
-                                    ? 'Please enter building name'
-                                    : null,
+                        validator: (value) => value == null || value.isEmpty ? 'Please enter building name' : null,
                       ),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Property type'),
+                      const FieldLabel(text: 'Property type'),
                       DropdownProperyType(property: property),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Photos'),
+                      const FieldLabel(text: 'Photos'),
                       UpdatePhoto(property: property),
-                     const SizedBox(height: 16),
-const FieldLabel(text: 'Location'),
-const LocationInputWidget(), 
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Contact Information'),
+                      const FieldLabel(text: 'Location'),
+                      const LocationInputWidget(),
+                      const SizedBox(height: 16),
+                      const FieldLabel(text: 'Contact Information'),
                       CustomTextField(
                         controller: pgFormProvider.phonenumController,
                         hint: 'Phone number',
                         icon: Icons.phone,
                         keyboardType: TextInputType.phone,
-                        validator:
-                            (value) =>
-                                value == null || value.isEmpty
-                                    ? 'Please enter your phone number'
-                                    : !RegExp(r'^\d{10}$').hasMatch(value)
-                                    ? 'Enter valid 10-digit number'
-                                    : null,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) return 'Please enter your phone number';
+                          if (!RegExp(r'^\d{10}$').hasMatch(value)) return 'Enter valid 10-digit number';
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
@@ -122,15 +153,11 @@ const LocationInputWidget(),
                         hint: 'Email',
                         icon: Icons.email,
                         keyboardType: TextInputType.emailAddress,
-                        validator:
-                            (value) =>
-                                value == null || value.isEmpty
-                                    ? 'Please enter your email'
-                                    : !RegExp(
-                                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                                    ).hasMatch(value)
-                                    ? 'Enter valid email'
-                                    : null,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) return 'Please enter your email';
+                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) return 'Enter valid email';
+                          return null;
+                        },
                       ),
                     ],
                   ),
@@ -144,43 +171,39 @@ const LocationInputWidget(),
                 CustomCard(
                   child: Column(
                     children: [
-                      FieldLabel(text: 'About Property'),
+                      const FieldLabel(text: 'About Property'),
                       CustomTextField(
                         controller: pgFormProvider.aboutcontroller,
                         hint: 'About Property',
                         icon: Icons.description,
                         maxLines: 3,
                       ),
-                      FieldLabel(text: 'Food Availability'),
-                            DropdownFoodPg(),
-                            const SizedBox(height: 16),
+                      const SizedBox(height: 12),
+                      const FieldLabel(text: 'Food Availability'),
+                      DropdownFoodPg(),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Rental Amount'),
+                      const FieldLabel(text: 'Rental Amount'),
                       CustomTextField(
                         controller: pgFormProvider.amountcontroller,
                         hint: 'Amount (₹)',
                         icon: Icons.currency_rupee,
                         keyboardType: TextInputType.number,
-                        validator:
-                            (value) =>
-                                value == null || value.isEmpty
-                                    ? 'Enter amount'
-                                    : null,
+                        validator: (value) => value == null || value.isEmpty ? 'Enter amount' : null,
                       ),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Room Configuration'),
+                      const FieldLabel(text: 'Room Configuration'),
                       Row(
                         children: [
                           Expanded(child: BedroomCount(property: property)),
-                          SizedBox(width: 4),
+                          const SizedBox(width: 4),
                           Expanded(child: BathroomCount(property: property)),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Furnishing Status'),
+                      const FieldLabel(text: 'Furnishing Status'),
                       DropdownFurnished(property: property),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Power Backup'),
+                      const FieldLabel(text: 'Power Backup'),
                       DropdownPowerbackup(property: property),
                     ],
                   ),
@@ -196,110 +219,115 @@ const LocationInputWidget(),
 
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (formKey.currentState!.validate()) {
-                        try {
+                  child: Consumer<PgFormProvider>(
+                    builder: (context, pgProvider, _) {
+                      return ElevatedButton(
+                        onPressed: pgProvider.isLoading
+                            ? null
+                            : () async {
+                                if (!formKey.currentState!.validate()) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Please fix the errors in the form.'), backgroundColor: Colors.red),
+                                  );
+                                  return;
+                                }
 
-                          List<String> imageUrls = [];
-                     
-                          if (photoPickerProvider.images.isEmpty) {
-                            imageUrls = property.photoPath;
-                          } else {
-                            for (var image in photoPickerProvider.images) {
-                              String url = await CloudinaryService()
-                                  .uploadImage(image);
-                                  
-                              imageUrls.add(url);
-                            }
-                          }
+                                // bedroom/bathroom validation
+                                final bedroomStr = propertyTypeProvider.bedroom?.toString() ?? property.bedroom;
+                                final bathroomStr = propertyTypeProvider.bathroom?.toString() ?? property.bathroom;
+                                final bedroomOk = bedroomStr != null && bedroomStr != '0';
+                                final bathroomOk = bathroomStr != null && bathroomStr != '0';
+                                if (!bedroomOk || !bathroomOk) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Please select at least one bedroom and bathroom'), backgroundColor: Colors.red),
+                                  );
+                                  return;
+                                }
 
-          
+                                pgProvider.setLoading(true);
 
-                          pgFormProvider.setName(
-                            pgFormProvider.nameController.text,
-                          );
-                          pgFormProvider.setPropertyType(
-                            propertyTypeProvider.selectedPropertyType
-                                    ?.toString() ??
-                                property.propertyType,
-                          );
+                                try {
+                                  final List<String> finalImageUrls = [];
+                                  final imagesList = photoPickerProvider.images;
+                                  final urlsList = photoPickerProvider.updatePhotos;
+                                  final maxLen = imagesList.length > urlsList.length ? imagesList.length : urlsList.length;
 
-                          pgFormProvider.setLocation(
-                            locationProvider.locationController.text,
-                          );
-                          pgFormProvider.setPhone(
-                            pgFormProvider.phonenumController.text,
-                          );
-                          pgFormProvider.setPhotoPath(imageUrls);
-                          pgFormProvider.setEmail(
-                            pgFormProvider.emailController.text,
-                          );
-                          pgFormProvider.setAbout(
-                            pgFormProvider.aboutcontroller.text,
-                          );
-                          pgFormProvider.setFurnished(
-                            propertyTypeProvider.furnished?.toString() ??
-                                property.furnished,
-                          );
+                                  for (int i = 0; i < maxLen; i++) {
+                                    if (i < urlsList.length && urlsList[i].isNotEmpty) {
+                                      finalImageUrls.add(urlsList[i]);
+                                      continue;
+                                    }
 
-                          pgFormProvider.setPowerbackup(
-                            propertyTypeProvider.powerbackup?.toString() ??
-                                property.powerbackup,
-                          );
+                                    if (i < imagesList.length) {
+                                      final item = imagesList[i];
+                                      if (item is File) {
+                                        try {
+                                          final uploadedUrl = await cloudinary.uploadImage(item);
+                                          finalImageUrls.add(uploadedUrl);
+                                        } catch (e) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Failed to upload image: $e'), backgroundColor: Colors.red),
+                                          );
+                                          pgProvider.setLoading(false);
+                                          return;
+                                        }
+                                      } else {
+                                        continue;
+                                      }
+                                    }
+                                  }
 
-                          pgFormProvider.setAmount(
-                            pgFormProvider.amountcontroller.text,
-                          );
-                          pgFormProvider.setAmenities(
-                            amenitiesProvider
-                                .getSelectedAmenities()
-                                .map((e) => {'name': e})
-                                .toList(),
-                          );
-                          pgFormProvider.setBathroom(
-                            propertyTypeProvider?.bathroom.toString() ??
-                                property.bathroom,
-                          );
+                                  if (finalImageUrls.isEmpty && property.photoPath != null && property.photoPath!.isNotEmpty) {
+                                    finalImageUrls.addAll(property.photoPath!);
+                                  }
 
-                          pgFormProvider.setBedroom(
-                            propertyTypeProvider.bedroom?.toString() ??
-                                property.bedroom,
-                          );
-                          await pgFormProvider.update(property.id!);
-                          propertyTypeProvider.clearSelections();
-                          // ignore: use_build_context_synchronously
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Property updated successfully!'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
+                                  pgProvider
+                                    ..setName(pgProvider.nameController.text)
+                                    ..setPropertyType(propertyTypeProvider.selectedPropertyType?.toString() ?? property.propertyType)
+                                    ..setLocation(locationProvider.locationController.text)
+                                    ..setPhone(pgProvider.phonenumController.text)
+                                    ..setEmail(pgProvider.emailController.text)
+                                    ..setAbout(pgProvider.aboutcontroller.text)
+                                    ..setFurnished(propertyTypeProvider.furnished?.toString() ?? property.furnished)
+                                    ..setPowerbackup(propertyTypeProvider.powerbackup?.toString() ?? property.powerbackup)
+                                    ..setAmount(pgProvider.amountcontroller.text)
+                                    ..setAmenities(amenitiesProvider.getSelectedAmenities().map((e) => {'name': e}).toList())
+                                    ..setBathroom(propertyTypeProvider.bathroom?.toString() ?? property.bathroom)
+                                    ..setBedroom(propertyTypeProvider.bedroom?.toString() ?? property.bedroom)
+                                    ..setPhotoPath(finalImageUrls);
 
-                          // ignore: use_build_context_synchronously
-                          Navigator.pop(context,property);
-                        } catch (e) {
-                          // ignore: use_build_context_synchronously
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Error: $e'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      }
+                                  await pgProvider.update(property.id!);
+
+                                  propertyTypeProvider.clearSelections();
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Property updated successfully!'), backgroundColor: Colors.green),
+                                  );
+
+                                  Navigator.pop(context, property);
+                                } catch (e, st) {
+                                  log('UpdatePgForm error: $e\n$st');
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+                                  );
+                                } finally {
+                                  pgProvider.setLoading(false);
+                                }
+                              },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                          backgroundColor: Colors.deepPurple,
+                        ),
+                        child: pgProvider.isLoading
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                              )
+                            : const Text('Update', style: TextStyle(color: Colors.white)),
+                      );
                     },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      backgroundColor: Colors.deepPurple,
-                    ),
-                    child: const Text(
-                      'Update',
-                      style: TextStyle(color: Colors.white),
-                    ),
                   ),
                 ),
 

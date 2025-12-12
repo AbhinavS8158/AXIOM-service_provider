@@ -7,7 +7,6 @@ class RentPropertyService {
 
   Stream<List<PropertycardFormModel>> getRentProperties() {
     final uid = FirebaseAuth.instance.currentUser?.uid;
-
     if (uid == null) {
       // Return empty list if no user is logged in
       return Stream.value([]);

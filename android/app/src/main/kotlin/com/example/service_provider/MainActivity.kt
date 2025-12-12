@@ -1,4 +1,4 @@
-package com.example.service_provider
+package com.axiom.service_provider
 
 import io.flutter.embedding.android.FlutterActivity
 

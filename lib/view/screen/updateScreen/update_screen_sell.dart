@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,36 +31,35 @@ class UpdateSellForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locationProvider = Provider.of<LocationProvider>(
-      context,
-      listen: false,
-    );
-    final propertyTypeProvider = Provider.of<PropertyTypeProvider>(
-      context,
-      listen: false,
-    );
+    final locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    final propertyTypeProvider = Provider.of<PropertyTypeProvider>(context, listen: false);
     propertyTypeProvider.initializeFromProperty(property);
-    final photoPickerProvider = Provider.of<PhotoPickerProvider>(
-      context,
-      listen: false,
-    );
-    final amenitiesProvider = Provider.of<AmenitiesProvider>(
-      context,
-      listen: false,
-    );
-    final sellFormProvider = Provider.of<SellFormProvider>(
-      context,
-      listen: false,
-    );
+    final photoPickerProvider = Provider.of<PhotoPickerProvider>(context, listen: false);
+    final amenitiesProvider = Provider.of<AmenitiesProvider>(context, listen: false);
+    final sellFormProvider = Provider.of<SellFormProvider>(context, listen: false);
 
-    sellFormProvider.nameController.text = property.name;
-    sellFormProvider.phonenumController.text = property.phoneNumber;
-    sellFormProvider.emailController.text = property.email;
-    sellFormProvider.aboutController.text = property.about;
-    sellFormProvider.amountController.text = property.amount.toString();
-    locationProvider.locationController.text = property.location;
+    // Guarded initial fill — don't overwrite if user already typed
+    if (sellFormProvider.nameController.text.isEmpty) {
+      sellFormProvider.nameController.text = property.name ?? '';
+    }
+    if (sellFormProvider.phonenumController.text.isEmpty) {
+      sellFormProvider.phonenumController.text = property.phoneNumber ?? '';
+    }
+    if (sellFormProvider.emailController.text.isEmpty) {
+      sellFormProvider.emailController.text = property.email ?? '';
+    }
+    if (sellFormProvider.aboutController.text.isEmpty) {
+      sellFormProvider.aboutController.text = property.about ?? '';
+    }
+    if (sellFormProvider.amountController.text.isEmpty) {
+      sellFormProvider.amountController.text = property.amount?.toString() ?? '';
+    }
+    if (locationProvider.locationController.text.isEmpty) {
+      locationProvider.locationController.text = property.location ?? '';
+    }
 
     final formKey = sellFormProvider.formKey;
+    final cloudinary = CloudinaryService();
 
     return Scaffold(
       backgroundColor: AppColor.bg,
@@ -79,41 +79,34 @@ class UpdateSellForm extends StatelessWidget {
                 CustomCard(
                   child: Column(
                     children: [
-                      FieldLabel(text: 'Name of the building'),
+                      const FieldLabel(text: 'Name of the building'),
                       CustomTextField(
                         controller: sellFormProvider.nameController,
                         hint: 'Name of the building',
                         icon: Icons.domain,
-                        validator:
-                            (value) =>
-                                value == null || value.isEmpty
-                                    ? 'Please enter building name'
-                                    : null,
+                        validator: (value) => value == null || value.isEmpty ? 'Please enter building name' : null,
                       ),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Property type'),
+                      const FieldLabel(text: 'Property type'),
                       DropdownProperyType(property: property),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Photos'),
+                      const FieldLabel(text: 'Photos'),
                       UpdatePhoto(property: property),
-                     
-const SizedBox(height: 16),
-const FieldLabel(text: 'Location'),
-const LocationInputWidget(), 
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Contact Information'),
+                      const FieldLabel(text: 'Location'),
+                      const LocationInputWidget(),
+                      const SizedBox(height: 16),
+                      const FieldLabel(text: 'Contact Information'),
                       CustomTextField(
                         controller: sellFormProvider.phonenumController,
                         hint: 'Phone number',
                         icon: Icons.phone,
                         keyboardType: TextInputType.phone,
-                        validator:
-                            (value) =>
-                                value == null || value.isEmpty
-                                    ? 'Please enter your phone number'
-                                    : !RegExp(r'^\d{10}$').hasMatch(value)
-                                    ? 'Enter valid 10-digit number'
-                                    : null,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) return 'Please enter your phone number';
+                          if (!RegExp(r'^\d{10}$').hasMatch(value)) return 'Enter valid 10-digit number';
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
@@ -121,29 +114,22 @@ const LocationInputWidget(),
                         hint: 'Email',
                         icon: Icons.email,
                         keyboardType: TextInputType.emailAddress,
-                        validator:
-                            (value) =>
-                                value == null || value.isEmpty
-                                    ? 'Please enter your email'
-                                    : !RegExp(
-                                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                                    ).hasMatch(value)
-                                    ? 'Enter valid email'
-                                    : null,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) return 'Please enter your email';
+                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) return 'Enter valid email';
+                          return null;
+                        },
                       ),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 24),
-                const SectionHeader(
-                  title: 'Advanced Details',
-                  icon: Icons.settings,
-                ),
+                const SectionHeader(title: 'Advanced Details', icon: Icons.settings),
                 CustomCard(
                   child: Column(
                     children: [
-                      FieldLabel(text: 'About Property'),
+                      const FieldLabel(text: 'About Property'),
                       CustomTextField(
                         controller: sellFormProvider.aboutController,
                         hint: 'About Property',
@@ -151,151 +137,143 @@ const LocationInputWidget(),
                         maxLines: 3,
                       ),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Rental Amount'),
+                      const FieldLabel(text: 'Price'),
                       CustomTextField(
                         controller: sellFormProvider.amountController,
                         hint: 'Amount (₹)',
                         icon: Icons.currency_rupee,
                         keyboardType: TextInputType.number,
-                        validator:
-                            (value) =>
-                                value == null || value.isEmpty
-                                    ? 'Enter amount'
-                                    : null,
+                        validator: (value) => value == null || value.isEmpty ? 'Enter amount' : null,
                       ),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Room Configuration'),
+                      const FieldLabel(text: 'Room Configuration'),
                       Row(
                         children: [
                           Expanded(child: BedroomCount(property: property)),
-                          SizedBox(width: 4),
+                          const SizedBox(width: 4),
                           Expanded(child: BathroomCount(property: property)),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Furnishing Status'),
+                      const FieldLabel(text: 'Furnishing Status'),
                       DropdownFurnished(property: property),
                       const SizedBox(height: 16),
-                      FieldLabel(text: 'Power Backup'),
+                      const FieldLabel(text: 'Power Backup'),
                       DropdownPowerbackup(property: property),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 24),
-                const SectionHeader(
-                  title: 'Amenities',
-                  icon: Icons.star_border,
-                ),
+                const SectionHeader(title: 'Amenities', icon: Icons.star_border),
                 CustomCard(child: AmenitiesGrid(property: property)),
                 const SizedBox(height: 30),
 
+                // Submit button with loading indicator
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      log('Update pressed');
-                      if (formKey.currentState!.validate()) {
-                        try {
-                          List<String> imageUrls = [];
+                  child: Consumer<SellFormProvider>(
+                    builder: (context, sellProvider, _) {
+                      return ElevatedButton(
+                        onPressed: sellProvider.isLoading
+                            ? null
+                            : () async {
+                                if (!formKey.currentState!.validate()) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Please fix the errors in the form.'), backgroundColor: Colors.red),
+                                  );
+                                  return;
+                                }
 
-                          if (photoPickerProvider.images.isEmpty) {
-                            imageUrls = property.photoPath;
-                          } else {
-                            for (var image in photoPickerProvider.images) {
-                              String url = await CloudinaryService()
-                                  .uploadImage(image);
+                                sellProvider.setLoading(true);
+                                try {
+                                  // Build final image URLs: prefer already-uploaded URLs first, else upload local Files
+                                  final List<String> finalImageUrls = [];
+                                  final imagesList = photoPickerProvider.images; // may be List<File>
+                                  final urlsList = photoPickerProvider.updatePhotos;
 
-                              imageUrls.add(url);
-                            }
-                          }
+                                  final maxLen = imagesList.length > urlsList.length ? imagesList.length : urlsList.length;
 
-                          sellFormProvider.setName(
-                            sellFormProvider.nameController.text,
-                          );
-                          sellFormProvider.setPropertyType(
-                            propertyTypeProvider.selectedPropertyType
-                                    ?.toString() ??
-                                property.propertyType,
-                          );
+                                  for (var i = 0; i < maxLen; i++) {
+                                    if (i < urlsList.length && urlsList[i].isNotEmpty) {
+                                      finalImageUrls.add(urlsList[i]);
+                                      continue;
+                                    }
 
-                          sellFormProvider.setLocation(
-                            locationProvider.locationController.text,
-                          );
-                          sellFormProvider.setPhone(
-                            sellFormProvider.phonenumController.text,
-                          );
-                          sellFormProvider.setPhotoPath(imageUrls);
-                          sellFormProvider.setEmail(
-                            sellFormProvider.emailController.text,
-                          );
-                          sellFormProvider.setAbout(
-                            sellFormProvider.aboutController.text,
-                          );
-                          sellFormProvider.setFurnished(
-                            propertyTypeProvider.furnished?.toString() ??
-                                property.furnished,
-                          );
+                                    if (i < imagesList.length) {
+                                      final item = imagesList[i];
+                                      if (item is File) {
+                                        try {
+                                          final uploaded = await cloudinary.uploadImage(item);
+                                          finalImageUrls.add(uploaded);
+                                        } catch (e) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Failed to upload image: $e'), backgroundColor: Colors.red),
+                                          );
+                                          sellProvider.setLoading(false);
+                                          return;
+                                        }
+                                      } else {
+                                        continue; // skip placeholder/null
+                                      }
+                                    }
+                                  }
 
-                          sellFormProvider.setPowerbackup(
-                            propertyTypeProvider.powerbackup?.toString() ??
-                                property.powerbackup,
-                          );
+                                  if (finalImageUrls.isEmpty && property.photoPath != null && property.photoPath!.isNotEmpty) {
+                                    finalImageUrls.addAll(property.photoPath!);
+                                  }
 
-                          sellFormProvider.setAmount(
-                            sellFormProvider.amountController.text,
-                          );
-                          sellFormProvider.setAmenities(
-                            amenitiesProvider
-                                .getSelectedAmenities()
-                                .map((e) => {'name': e})
-                                .toList(),
-                          );
-                          sellFormProvider.setBathroom(
-                            propertyTypeProvider.bathroom?.toString() ??
-                                property.bathroom,
-                          );
+                                  // set values into provider
+                                  sellProvider
+                                    ..setName(sellProvider.nameController.text)
+                                    ..setPropertyType(propertyTypeProvider.selectedPropertyType?.toString() ?? property.propertyType)
+                                    ..setLocation(locationProvider.locationController.text)
+                                    ..setPhone(sellProvider.phonenumController.text)
+                                    ..setEmail(sellProvider.emailController.text)
+                                    ..setAbout(sellProvider.aboutController.text)
+                                    ..setFurnished(propertyTypeProvider.furnished?.toString() ?? property.furnished)
+                                    ..setPowerbackup(propertyTypeProvider.powerbackup?.toString() ?? property.powerbackup)
+                                    ..setAmount(sellProvider.amountController.text)
+                                    ..setAmenities(amenitiesProvider.getSelectedAmenities().map((e) => {'name': e}).toList())
+                                    ..setBathroom(propertyTypeProvider.bathroom?.toString() ?? property.bathroom)
+                                    ..setBedroom(propertyTypeProvider.bedroom?.toString() ?? property.bedroom)
+                                    ..setPhotoPath(finalImageUrls);
 
-                          sellFormProvider.setBedroom(
-                            propertyTypeProvider.bedroom?.toString() ??
-                                property.bedroom,
-                          );
-                          await sellFormProvider.update(property.id!);
-                           propertyTypeProvider.clearSelections();
-                          // ignore: use_build_context_synchronously
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Property updated successfully!'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
+                                  await sellProvider.update(property.id!);
 
-                          // ignore: use_build_context_synchronously
-                          Navigator.pop(context, property);
-                        } catch (e) {
-                          // ignore: use_build_context_synchronously
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Error: $e'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      }
+                                  propertyTypeProvider.clearSelections();
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Property updated successfully!'), backgroundColor: Colors.green),
+                                  );
+
+                                  Navigator.pop(context, property);
+                                } catch (e, st) {
+                                  log('UpdateSellForm error: $e\n$st');
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+                                  );
+                                } finally {
+                                  sellProvider.setLoading(false);
+                                }
+                              },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                          backgroundColor: Colors.deepPurple,
+                        ),
+                        child: sellProvider.isLoading
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                            : const Text('Update', style: TextStyle(color: Colors.white)),
+                      );
                     },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      backgroundColor: Colors.deepPurple,
-                    ),
-                    child: const Text(
-                      'Update',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  
-                
                   ),
                 ),
 

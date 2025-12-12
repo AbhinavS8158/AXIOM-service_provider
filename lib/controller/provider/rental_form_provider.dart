@@ -262,6 +262,40 @@ Future<void> addtodb(BuildContext context) async {
 
   notifyListeners();
 }
+/// Clear controllers and reset provider state to defaults.
+/// Does NOT delete the Firestore document; only clears UI/edit state.
+void clearAllFields() {
+  // Clear text controllers
+  nameController.clear();
+  locationController.clear();
+  phonenumController.clear();
+  emailController.clear();
+  aboutcontroller.clear();
+  amountcontroller.clear();
+
+  // Reset simple fields
+  name = '';
+  propertyType = '';
+  photoPath = [];
+  location = '';
+  phoneNumber = '';
+  email = '';
+  about = '';
+  amount = '';
+  furnished = '';
+  powerbackup = '';
+  selectedAmenities = [];
+  bathroom = '';
+  bedroom = '';
+
+  // Reset flags
+  isInitialized = false;
+  documentId = null;
+  isLoading = false;
+
+  notifyListeners();
+}
+
 
 
 

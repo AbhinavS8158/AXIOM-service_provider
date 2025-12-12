@@ -160,4 +160,10 @@ class PhotoPickerProvider extends ChangeNotifier {
     updatePhotos.clear();
     notifyListeners();
   }
+  void clearAll() {
+  _images.clear();
+  updatePhotos.clear();
+  notifyListeners();
+}
+
 }

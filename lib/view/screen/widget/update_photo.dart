@@ -23,10 +23,27 @@ class UpdatePhoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageProvider = Provider.of<PhotoPickerProvider>(context, listen: false);
+    final imageProvider = Provider.of<PhotoPickerProvider>(
+      context,
+      listen: false,
+    );
+
+    // Call setInitialPhotos once after first frame if provider is empty and property has photos.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      imageProvider.setInitialPhotos(property!.photoPath);
+      try {
+        if (property != null &&
+            property!.photoPath != null &&
+            property!.photoPath!.isNotEmpty &&
+            imageProvider.updatePhotos.isEmpty) {
+          imageProvider.setInitialPhotos(
+            List<String>.from(property!.photoPath!),
+          );
+        }
+      } catch (e) {
+        log('setInitialPhotos failed: $e');
+      }
     });
+
     return Consumer<PhotoPickerProvider>(
       builder: (context, photoProvider, child) {
         return Padding(
@@ -42,6 +59,7 @@ class UpdatePhoto extends StatelessWidget {
                   color: Colors.black87,
                 ),
               ),
+              const SizedBox(height: 8),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -58,12 +76,16 @@ class UpdatePhoto extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
+                    // show empty state or grid
                     if (photoProvider.updatePhotos.isEmpty)
                       photoProvider.isLoading
-                          ? CircularProgressIndicator()
+                          ? const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 24),
+                            child: Center(child: CircularProgressIndicator()),
+                          )
                           : _buildEmptyState(context)
                     else
-                      buildPhotoGrid(property!, photoProvider),
+                      buildPhotoGrid(property, photoProvider),
                     _buildAddButton(context),
                   ],
                 ),
@@ -118,10 +140,7 @@ class UpdatePhoto extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               'High-quality photos attract more customers',
-              style: TextStyle(
-                fontSize: 13,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
             ),
           ],
         ),
@@ -129,72 +148,134 @@ class UpdatePhoto extends StatelessWidget {
     );
   }
 
-  Widget buildPhotoGrid(PropertycardFormModel property, PhotoPickerProvider photoPicker) {
-    return Consumer<PhotoPickerProvider>(
-      builder: (context, photoPicker, child) {
-        return Padding(
-          padding: const EdgeInsets.all(12),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: photoPicker.updatePhotos.length,
-            itemBuilder: (context, index) {
-              final path = photoPicker.updatePhotos[index];
-              final isNetwork = path.startsWith('http');
-              log('Photo path: $path');
+  Widget buildPhotoGrid(
+    PropertycardFormModel? property,
+    PhotoPickerProvider photoPicker,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: photoPicker.updatePhotos.length,
+        itemBuilder: (context, index) {
+          final path = photoPicker.updatePhotos[index];
+          final isNetwork = path.startsWith('http');
+          log('Photo path[$index]: $path');
 
-              return Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: isNetwork
+          return Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child:
+                    isNetwork
                         ? Image.network(
-                            path,
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
-                          )
+                          path,
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+
+                            // SHOW PLACEHOLDER WHILE LOADING
+                            return Container(
+                              width: 120,
+                              height: 120,
+                              color: Colors.grey.shade200,
+                              child: Center(
+                                child: SizedBox(
+                                  width: 28,
+                                  height: 28,
+                                  child: Image.asset("assets/img/pictures.png"),
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder:
+                              (context, error, stackTrace) => Container(
+                                width: 120,
+                                height: 120,
+                                color: Colors.grey.shade300,
+                                child: const Center(
+                                  child: Icon(Icons.broken_image),
+                                ),
+                              ),
+                        )
                         : Image.file(
-                            File(path),
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
-                          ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        shape: BoxShape.circle,
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          log('Removing photo at index: $index');
-                          photoPicker.removeInitialPhotos(index);
-                        },
-                        child: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 16,
+                          File(path),
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.cover,
+                          errorBuilder:
+                              (context, error, stackTrace) => Container(
+                                width: 120,
+                                height: 120,
+                                color: Colors.grey.shade300,
+                                child: const Center(
+                                  child: Icon(Icons.broken_image),
+                                ),
+                              ),
                         ),
-                      ),
+              ),
+
+              // index badge (bottom-left)
+              Positioned(
+                left: 6,
+                bottom: 6,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '${index + 1}', // 1-based index
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              );
-            },
-          ),
-        );
-      },
+                ),
+              ),
+
+              // remove button (top-right)
+              Positioned(
+                top: 6,
+                right: 6,
+                child: GestureDetector(
+                  onTap: () {
+                    log('Removing photo at index: $index');
+                    photoPicker.removeInitialPhotos(index);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                  ),
+                ),
+              ),
+
+              // optional: make image tappable to open picker/preview (not changing existing behavior)
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -211,18 +292,20 @@ class UpdatePhoto extends StatelessWidget {
             onTap: () => _showCustomSheet(context),
             borderRadius: BorderRadius.vertical(
               bottom: const Radius.circular(12),
-              top: photoProvider.updatePhotos.isEmpty
-                  ? const Radius.circular(0)
-                  : const Radius.circular(12),
+              top:
+                  photoProvider.updatePhotos.isEmpty
+                      ? const Radius.circular(0)
+                      : const Radius.circular(12),
             ),
             child: Ink(
               decoration: BoxDecoration(
                 color: Colors.blue.shade50,
                 borderRadius: BorderRadius.vertical(
                   bottom: const Radius.circular(12),
-                  top: photoProvider.updatePhotos.isEmpty
-                      ? const Radius.circular(0)
-                      : const Radius.circular(12),
+                  top:
+                      photoProvider.updatePhotos.isEmpty
+                          ? const Radius.circular(0)
+                          : const Radius.circular(12),
                 ),
                 border: Border.all(color: Colors.blue.shade100),
               ),

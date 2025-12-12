@@ -18,13 +18,27 @@ class AmenitiesProvider extends ChangeNotifier {
 
   List<Amenity> get amenities => _amenities;
 
-  void setSelectedFromProperty(List<String> selectedNames) {
+   void setInitialSelectedAmenities(List<String> selectedNames) {
     for (var amenity in _amenities) {
       amenity.isSelected = selectedNames.contains(amenity.name);
     }
-    isSyncedFromProperty = true;
     notifyListeners();
   }
+
+ void setSelectedFromProperty(List<Map<String, dynamic>> amenitiesFromDB) {
+  // Extract only the names
+  final selectedNames = amenitiesFromDB
+      .map((e) => e['name']?.toString() ?? '')
+      .toList();
+
+  for (var amenity in _amenities) {
+    amenity.isSelected = selectedNames.contains(amenity.name);
+  }
+
+  isSyncedFromProperty = true;
+  notifyListeners();
+}
+
 
   void resetSyncFlag() {
     isSyncedFromProperty = false;

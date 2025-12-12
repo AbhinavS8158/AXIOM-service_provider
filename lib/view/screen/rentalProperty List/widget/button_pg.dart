@@ -12,77 +12,79 @@ class PButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<PgFormProvider>(context);
-    return Row(
+    final bool isEditable=property.status?.toString()!='1';
+   
+     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => UpdatePgForm(property: property,)),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+        if (isEditable) ...[
+          ElevatedButton(
+            onPressed: () {
+              log('update button clicked');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UpdatePgForm(property: property)),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+            ),
+            child: const Text('update', style: TextStyle(color: Colors.white)),
           ),
-          child: Text('update', style: TextStyle(color: Colors.white)),
-        ),
-        const SizedBox(width: 30),
+          const SizedBox(width: 30),
+        ],
+
         ElevatedButton(
           onPressed: () async {
-            if (property.id != null && property.id!.isNotEmpty) {
-              final confirmDelete = await showDialog<bool>(
-                context: context,
-                builder:
-                    (context) => AlertDialog(
-                      title: const Text('Confirm Deletion'),
-                      content: const Text(
-                        'Are you sure you want to delete this property?',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed:
-                              () => Navigator.pop(context, false), // Cancel
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed:
-                              () => Navigator.pop(context, true), // Confirm
-                          child: const Text(
-                            'Delete',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      ],
-                    ),
-                    
-              );
-              // ignore: use_build_context_synchronously
-              Navigator.pop(context);
-
-              // If user confirmed, proceed with deletion
-              if (confirmDelete == true) {
-                await controller.deletePgDataById(property.id!);
-                // ignore: use_build_context_synchronously
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Property deleted successfully'),
-                  ),
-                );
-              }
-            } else {
+            if (property.id == null || property.id!.isEmpty) {
               log('No document ID provided');
-            
+              return;
+            }
+
+            final confirmDelete = await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Confirm Deletion'),
+                content: const Text('Are you sure you want to delete this property?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+              ),
+            );
+
+            if (confirmDelete != true) return;
+
+            try {
+              await controller.deletePgDataById(property.id!);
+
+              // show feedback
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Property deleted successfully')),
+              );
+
+              // close current screen (optional: return true to caller)
+              Navigator.pop(context, true);
+            } catch (e) {
+              log('Delete error: $e');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Failed to delete property: $e')),
+              );
             }
           },
-
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
           ),
-          child: Text('delete', style: TextStyle(color: Colors.white)),
+          child: const Text('delete', style: TextStyle(color: Colors.white)),
         ),
       ],
     );

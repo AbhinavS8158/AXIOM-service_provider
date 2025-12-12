@@ -49,6 +49,7 @@ dependencies:
   cloudinary_public: ^0.23.1
   carousel_slider: ^5.0.0
   geocoding: ^4.0.0
+  
 
 
 
@@ -62,6 +63,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/img/axiom.png_cropped_processed_by_imagy.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -82,7 +88,7 @@ flutter:
     - assets\img\apple.png
     - assets\animation\Animation - 1746427682309.json
     - assets\img\apartment-building-city-with-copy-space.jpg
-  
+    - assets\img\pictures.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
