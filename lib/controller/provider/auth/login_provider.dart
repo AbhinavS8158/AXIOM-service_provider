@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -12,83 +12,147 @@ class LoginController with ChangeNotifier {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final obscurePassword = ValueNotifier<bool>(true);
+bool isLoading = false;
 
   // ---------------------------------------------------------
   // LOGIN USER
   // ---------------------------------------------------------
-  Future<void> loginUser(BuildContext context) async {
-    final loginData = LoginModel(
-      email: emailController.text.trim(),
-      password: passwordController.text,
+ Future<void> loginUser(BuildContext context) async {
+  if (isLoading) return;
+
+  final loginData = LoginModel(
+    email: emailController.text.trim(),
+    password: passwordController.text,
+  );
+
+  if (loginData.email.isEmpty || loginData.password.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please enter both email and password'),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+    return;
+  }
+
+  try {
+    isLoading = true;
+    notifyListeners();
+
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: loginData.email,
+      password: loginData.password,
     );
 
-    if (loginData.email.isEmpty || loginData.password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter both email and password'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
-    }
+    emailController.clear();
+    passwordController.clear();
 
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: loginData.email,
-        password: loginData.password,
-      );
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Login successful!'),
+        backgroundColor: Colors.green,
+      ),
+    );
 
-      // 🔥 CLEAR FIELDS AFTER SUCCESSFUL LOGIN
-      emailController.clear();
-      passwordController.clear();
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: 12),
-              Text('Login successful!'),
-            ],
-          ),
-          backgroundColor: Colors.green,
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.all(16),
-        ),
-      );
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => BottomNav()),
-        (route) => false,
-      );
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.message ?? 'Login failed'),
-          backgroundColor: Colors.redAccent,
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.all(16),
-        ),
-      );
-    }
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => BottomNav()),
+      (route) => false,
+    );
+  } on FirebaseAuthException catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(e.message ?? 'Login failed'),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+  } finally {
+    isLoading = false;
+    notifyListeners();
   }
+}
 
   // ---------------------------------------------------------
   // GOOGLE LOGIN
   // ---------------------------------------------------------
-  Future<bool> googlelogin() async {
-    final user = await GoogleSignIn().signIn();
-    GoogleSignInAuthentication userAuth = await user!.authentication;
+ Future<bool> googlelogin(BuildContext context) async {
+  if (isLoading) return false;
 
-    var credential = GoogleAuthProvider.credential(
-      idToken: userAuth.idToken,
-      accessToken: userAuth.accessToken,
+  try {
+    isLoading = true;
+    notifyListeners();
+
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    await googleSignIn.signOut();
+
+    final GoogleSignInAccount? googleUser =
+        await googleSignIn.signIn();
+
+    if (googleUser == null) {
+      isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    final OAuthCredential credential =
+        GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
     );
 
-    await FirebaseAuth.instance.signInWithCredential(credential);
-    return FirebaseAuth.instance.currentUser != null;
+    final UserCredential userCredential =
+        await FirebaseAuth.instance
+            .signInWithCredential(credential);
+
+    final User? user = userCredential.user;
+
+    if (user == null) {
+      throw Exception('User is null after Google sign-in');
+    }
+
+    /// ---------- SAVE TO FIRESTORE (FIXED) ----------
+    final docRef = FirebaseFirestore.instance
+        .collection('service_provider')
+        .doc(user.uid);
+
+    final docSnapshot = await docRef.get();
+
+    if (!docSnapshot.exists) {
+      await docRef.set({
+        'uid': user.uid, // optional but fine
+        'name': user.displayName ?? '',
+        'email': user.email ?? '',
+        'phone': user.phoneNumber ?? '',
+        'photoUrl': user.photoURL ?? '',
+      });
+    }
+    /// ----------------------------------------------
+
+    isLoading = false;
+    notifyListeners();
+    return true;
+  } on FirebaseAuthException catch (e) {
+    _handleError(context, e.message ?? 'Google sign-in failed');
+    return false;
+  } catch (e) {
+    _handleError(context, 'Something went wrong. Try again.');
+    return false;
   }
+}
+void _handleError(BuildContext context, String message) {
+  isLoading = false;
+  notifyListeners();
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.redAccent,
+    ),
+  );
+}
 
   // ---------------------------------------------------------
   // LOGOUT USER
@@ -141,29 +205,71 @@ class LoginController with ChangeNotifier {
   // ---------------------------------------------------------
   // RESET PASSWORD
   // ---------------------------------------------------------
-  Future<void> sendPasswordResetEmail(String email, BuildContext context) async {
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      log("Password reset email sent.");
+ Future<void> sendPasswordResetEmail(
+  String email,
+  BuildContext context,
+) async {
+  final trimmedEmail = email.trim();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: 12),
-              Text('Check your email to reset password'),
-            ],
-          ),
-          backgroundColor: Colors.green,
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.all(16),
-        ),
-      );
-    } catch (e) {
-      log("Error: $e");
-    }
+  if (trimmedEmail.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please enter your email address'),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+    return;
   }
+
+  try {
+    await FirebaseAuth.instance.sendPasswordResetEmail(
+      email: trimmedEmail,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.white),
+            SizedBox(width: 12),
+            Text('Password reset email sent successfully'),
+          ],
+        ),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(16),
+      ),
+    );
+  } on FirebaseAuthException catch (e) {
+    String message;
+
+    switch (e.code) {
+      case 'user-not-found':
+        message = 'No account found with this email';
+        break;
+      case 'invalid-email':
+        message = 'Please enter a valid email address';
+        break;
+      default:
+        message = e.message ?? 'Something went wrong';
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+  } catch (_) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Unable to send reset email'),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+  }
+}
+
 
   // ---------------------------------------------------------
   // DISPOSE CONTROLLERS (avoid memory leaks)
@@ -176,3 +282,4 @@ class LoginController with ChangeNotifier {
     super.dispose();
   }
 }
+

@@ -30,6 +30,10 @@ class SignUpProvider extends ChangeNotifier {
   File? pickedImage;
   final ImagePicker picker = ImagePicker();
 
+  // --------------------- LOADING STATE ---------------------
+bool isLoading = false;
+
+
 // --------------------- SERVICES ---------------------
   final AuthService _authService = AuthService();
   final AuthDatabaseService _dbService = AuthDatabaseService();
@@ -124,51 +128,68 @@ class SignUpProvider extends ChangeNotifier {
   }
 
 // --------------------- SUBMIT FORM ---------------------
-  Future<void> submitForm(BuildContext context) async {
-    try {
-      String? uploadedImageUrl = await uploadToCloudinary();
+ Future<void> submitForm(BuildContext context) async {
+  if (isLoading) return;
 
-      UserCredential userCred = await _authService.register(
-        emailController.text.trim(),
-        passwordController.text.trim(),
-      );
+  try {
+    isLoading = true;
+    notifyListeners();
 
-      String uid = userCred.user!.uid;
+    // 1️⃣ Upload image (if selected)
+    String? uploadedImageUrl = await uploadToCloudinary();
 
-      SignUpModel user = SignUpModel(
-        uid: uid,
-        username: usernameController.text.trim(),
-        email: emailController.text.trim(),
-        phone: phoneController.text.trim(),
-        profileImage: uploadedImageUrl,
-        createdAt: DateTime.now(),
-      );
+    // 2️⃣ Firebase Auth signup
+    UserCredential userCred = await _authService.register(
+      emailController.text.trim(),
+      passwordController.text.trim(),
+    );
 
-      await _dbService.saveUser(user);
+    String uid = userCred.user!.uid;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Signup Successful!"), backgroundColor: Colors.green),
-      );
+    // 3️⃣ Create model
+    SignUpModel user = SignUpModel(
+      uid: uid,
+      username: usernameController.text.trim(),
+      email: emailController.text.trim(),
+      phone: phoneController.text.trim(),
+      profileImage: uploadedImageUrl,
+      createdAt: DateTime.now(),
+    );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
+    // 4️⃣ Save to Firestore
+    await _dbService.saveUser(user);
 
-      usernameController.clear();
-      emailController.clear();
-      phoneController.clear();
-      passwordController.clear();
-      confirmPasswordController.clear();
-      pickedImage = null;
+    // 5️⃣ Success feedback
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Signup Successful!"),
+        backgroundColor: Colors.green,
+      ),
+    );
 
-      notifyListeners();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
-    }
+    // 6️⃣ Navigate
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
+
+    // 7️⃣ Clear fields
+    usernameController.clear();
+    emailController.clear();
+    phoneController.clear();
+    passwordController.clear();
+    confirmPasswordController.clear();
+    pickedImage = null;
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Error: $e")),
+    );
+  } finally {
+    isLoading = false;
+    notifyListeners();
   }
+}
+
 
 // --------------------- FETCH USER DATA (PROFILE) ---------------------
   Future<void> loadUserData() async {

@@ -39,22 +39,22 @@ class UpdatePgForm extends StatelessWidget {
 
     try {
       if (pgFormProvider.nameController.text.trim().isEmpty) {
-        pgFormProvider.nameController.text = property.name ?? '';
+        pgFormProvider.nameController.text = property.name ;
       }
       if (pgFormProvider.phonenumController.text.trim().isEmpty) {
-        pgFormProvider.phonenumController.text = property.phoneNumber ?? '';
+        pgFormProvider.phonenumController.text = property.phoneNumber ;
       }
       if (pgFormProvider.emailController.text.trim().isEmpty) {
-        pgFormProvider.emailController.text = property.email ?? '';
+        pgFormProvider.emailController.text = property.email ;
       }
       if (pgFormProvider.aboutcontroller.text.trim().isEmpty) {
-        pgFormProvider.aboutcontroller.text = property.about ?? '';
+        pgFormProvider.aboutcontroller.text = property.about ;
       }
       if (pgFormProvider.amountcontroller.text.trim().isEmpty) {
-        pgFormProvider.amountcontroller.text = property.amount?.toString() ?? '';
+        pgFormProvider.amountcontroller.text = property.amount.toString();
       }
       if (locationProvider.locationController.text.trim().isEmpty) {
-        locationProvider.locationController.text = property.location ?? '';
+        locationProvider.locationController.text = property.location ;
       }
 
       try {
@@ -63,9 +63,9 @@ class UpdatePgForm extends StatelessWidget {
         log('initializeFromProperty error: $e');
       }
 
-      if (photoPickerProvider.updatePhotos.isEmpty && (property.photoPath != null && property.photoPath!.isNotEmpty)) {
+      if (photoPickerProvider.updatePhotos.isEmpty && (property.photoPath != null && property.photoPath.isNotEmpty)) {
         try {
-          photoPickerProvider.setInitialPhotos(List<String>.from(property.photoPath!));
+          photoPickerProvider.setInitialPhotos(List<String>.from(property.photoPath));
         } catch (e) {
           log('setInitialPhotos failed: $e');
         }
@@ -73,7 +73,7 @@ class UpdatePgForm extends StatelessWidget {
 
       if (amenitiesProvider.getSelectedAmenities().isEmpty && property.amenities != null && property.amenities!.isNotEmpty) {
         try {
-          final names = property.amenities!.map((m) {
+          final names = property.amenities.map((m) {
             if (m is Map && m.containsKey('name')) return m['name'].toString();
             return m.toString();
           }).toList();

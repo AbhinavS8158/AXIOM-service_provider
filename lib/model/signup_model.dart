@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class SignUpModel {
   final String uid;
   final String username;
@@ -22,7 +24,20 @@ class SignUpModel {
       "email": email,
       "phone": phone,
       "profileImage": profileImage,
-      "createdAt": createdAt.toIso8601String(),
+      "createdAt": Timestamp.fromDate(createdAt),
     };
+  }
+
+  factory SignUpModel.fromMap(Map<String, dynamic> data, String id) {
+    return SignUpModel(
+      uid: data['uid'] ?? id,
+      username: data['username'] ?? '',
+      email: data['email'] ?? '',
+      phone: data['phone'] ?? '',
+      profileImage: data['profileImage'],
+      createdAt: data['createdAt'] is Timestamp
+          ? (data['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
+    );
   }
 }

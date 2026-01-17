@@ -4,18 +4,11 @@ import 'package:service_provider/controller/provider/sell_property_provider.dart
 import 'package:service_provider/model/propertycard_form_model.dart';
 import 'package:service_provider/utils/app_color.dart';
 import 'package:service_provider/view/screen/widget/bottom_navigation.dart';
-import 'package:service_provider/view/screen/widget/filter_chip_widget.dart';
 import 'package:service_provider/view/screen/widget/property_card_sell.dart';
 
 class SellPropertyList extends StatelessWidget {
   const SellPropertyList({super.key});
-   final List<String> _filters = const [
-    'All',
-    'Apartment',
-    'House',
-    'Studio',
-    'Villa',
-  ];
+   
 
   @override
   Widget build(BuildContext context) {
@@ -176,15 +169,7 @@ class SellPropertyList extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Filter Chips
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: 
-                      _filters
-                      .map((label)=>FilterChipWidget(label: label)).toList(),
-                      
-                    ),
-                  ),
+                
                 ],
               ),
             ),

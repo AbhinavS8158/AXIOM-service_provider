@@ -6,7 +6,9 @@ import 'package:service_provider/controller/provider/amenity_rental_provider.dar
 import 'package:service_provider/controller/provider/amenity_sell_provider.dart';
 import 'package:service_provider/controller/provider/auth/login_provider.dart';
 import 'package:service_provider/controller/provider/auth/signup_provider.dart';
+import 'package:service_provider/controller/provider/booking_provider.dart';
 import 'package:service_provider/controller/provider/bottom_nav_provider.dart';
+import 'package:service_provider/controller/provider/edit_profile_provider.dart';
 import 'package:service_provider/controller/provider/filter_provider.dart';
 import 'package:service_provider/controller/provider/location_provider.dart';
 import 'package:service_provider/controller/provider/pg_form_provider.dart';
@@ -23,6 +25,7 @@ import 'package:service_provider/controller/provider/rental_form_provider.dart';
 import 'package:service_provider/controller/provider/sell_form_provider.dart';
 import 'package:service_provider/controller/provider/sell_property_provider.dart';
 import 'package:service_provider/controller/provider/tab_nav_provider.dart';
+import 'package:service_provider/controller/provider/user_profile_provider.dart';
 import 'package:service_provider/firebase_options.dart';
 import 'package:service_provider/view/screen/splash/splash_screen.dart';
 import 'package:service_provider/view/screen/widget/bottom_navigation.dart';
@@ -63,6 +66,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SellPropertyProvider()),
         ChangeNotifierProvider(create: (_) => PgPropertyProvider()),
         ChangeNotifierProvider(create: (_) => FilterProvider()),
+        ChangeNotifierProvider(create: (_) => EditProfileProvider()),
+         ChangeNotifierProvider(create: (_) => BookingProvider()),
+          Provider<ProfileProvider>(
+      create: (_) => ProfileProvider(),
+    ),
       
       ],
       child: MaterialApp(

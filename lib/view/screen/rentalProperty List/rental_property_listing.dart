@@ -4,19 +4,12 @@ import 'package:service_provider/controller/provider/rent_property_provider.dart
 import 'package:service_provider/model/propertycard_form_model.dart';
 import 'package:service_provider/utils/app_color.dart';
 import 'package:service_provider/view/screen/widget/bottom_navigation.dart';
-import 'package:service_provider/view/screen/widget/filter_chip_widget.dart';
 import 'package:service_provider/view/screen/widget/propertycard.dart';
 
 class RentPropertyListingScreen extends StatelessWidget {
   const RentPropertyListingScreen({super.key});
   
-  final List<String> _filters = const [
-    'All',
-    'Apartment',
-    'House',
-    'Studio',
-    'Villa',
-  ];
+  
 
   @override
   Widget build(BuildContext context) {
@@ -185,14 +178,7 @@ class RentPropertyListingScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Filter Chips
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: 
-                    _filters
-                    .map((label)=>FilterChipWidget(label: label)).toList(),
-                    ),
-                  ),
+                
                 ],
               ),
             ),
@@ -343,31 +329,31 @@ class RentPropertyListingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      child: FilterChip(
-        label: Text(label),
-        selected: isSelected,
-        onSelected: (bool selected) {
+  // Widget _buildFilterChip(String label, bool isSelected) {
+  //   return Container(
+  //     margin: const EdgeInsets.only(right: 8),
+  //     child: FilterChip(
+  //       label: Text(label),
+  //       selected: isSelected,
+  //       onSelected: (bool selected) {
         
-        },
-        backgroundColor: Colors.white,
-        selectedColor: AppColor.forgot,
-        checkmarkColor: Colors.white,
-        labelStyle: TextStyle(
-          color: isSelected ? Colors.white : Colors.grey.shade600,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color: isSelected ? const Color.fromARGB(255, 185, 106, 224) : Colors.grey.shade300,
-          ),
-        ),
-        elevation: isSelected ? 4 : 0,
-        shadowColor: const Color.fromARGB(255, 218, 106, 224).withOpacity(0.3),
-      ),
-    );
-  }
+  //       },
+  //       backgroundColor: Colors.white,
+  //       selectedColor: AppColor.forgot,
+  //       checkmarkColor: Colors.white,
+  //       labelStyle: TextStyle(
+  //         color: isSelected ? Colors.white : Colors.grey.shade600,
+  //         fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+  //       ),
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(20),
+  //         side: BorderSide(
+  //           color: isSelected ? const Color.fromARGB(255, 185, 106, 224) : Colors.grey.shade300,
+  //         ),
+  //       ),
+  //       elevation: isSelected ? 4 : 0,
+  //       shadowColor: const Color.fromARGB(255, 218, 106, 224).withOpacity(0.3),
+  //     ),
+  //   );
+  // }
 }

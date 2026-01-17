@@ -3,58 +3,49 @@ import 'package:provider/provider.dart';
 import 'package:service_provider/controller/provider/sell_form_provider.dart';
 import 'package:service_provider/model/propertycard_form_model.dart';
 import 'package:service_provider/utils/app_color.dart';
+import 'package:service_provider/view/screen/booking_details/booking%20details.dart';
 import 'package:service_provider/view/screen/property_details/property_details_sell.dart';
-
 
 class PropertyCardSell extends StatelessWidget {
   final PropertycardFormModel property;
 
-  const PropertyCardSell({super.key, required this.property});
+  const PropertyCardSell({
+    super.key,
+    required this.property,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final selectedproperty = property;
+    final bool isBooked = property.bookingstatus == 'booked';
 
-    // Determine status UI dynamically
-    Color bg;
-    Color textColor;
-    IconData icon;
+    // Status UI
+    Color statusBg;
+    Color statusTextColor;
+    IconData statusIcon;
     String displayStatus;
 
-    switch (selectedproperty.status) {
-      case '1': // Accepted
-        bg = const Color(0xFF059669);
-        textColor = Colors.white;
-        icon = Icons.check_circle;
+    switch (property.status) {
+      case '1':
+        statusBg = const Color(0xFF059669);
+        statusTextColor = Colors.white;
+        statusIcon = Icons.check_circle;
         displayStatus = 'Approved';
         break;
-      case '2': // Rejected
-        bg = const Color(0xFFDC2626);
-        textColor = Colors.white;
-        icon = Icons.cancel;
+      case '2':
+        statusBg = const Color(0xFFDC2626);
+        statusTextColor = Colors.white;
+        statusIcon = Icons.cancel;
         displayStatus = 'Rejected';
         break;
-      default: // Pending
-        bg = const Color(0xFFF59E0B);
-        textColor = Colors.white;
-        icon = Icons.schedule;
+      default:
+        statusBg = const Color(0xFFF59E0B);
+        statusTextColor = Colors.white;
+        statusIcon = Icons.schedule;
         displayStatus = 'Pending';
     }
 
     return GestureDetector(
-      onTap: () {
-        final provider = Provider.of<SellFormProvider>(context, listen: false);
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SellpropertyDetailsScreen(
-              property: selectedproperty,
-              propertyStream: provider.getPropertyStream(property.id!),
-            ),
-          ),
-        );
-      },
+      onTap: () => _navigateToViewDetails(context),
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
@@ -66,11 +57,6 @@ class PropertyCardSell extends StatelessWidget {
               blurRadius: 20,
               offset: const Offset(0, 4),
             ),
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
           ],
         ),
         child: Stack(
@@ -78,247 +64,263 @@ class PropertyCardSell extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Image Section
-                Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                      child: Image.network(
-                        selectedproperty.photoPath.isNotEmpty
-                            ? selectedproperty.photoPath[0]
-                            : 'https://via.placeholder.com/400x200',
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            height: 200,
-                            width: double.infinity,
-                            color: Colors.grey.shade200,
-                            child: Icon(
-                              Icons.image_not_supported,
-                              size: 50,
-                              color: Colors.grey.shade400,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    // Gradient overlay
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        height: 80,
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.black.withOpacity(0.3),
-                              Colors.transparent,
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                // Content Section
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: _buildFeaturePill(selectedproperty),
-                    ),
-                    // Property Name
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5, left: 10),
-                      child: Text(
-                        selectedproperty.name,
+                _buildImageSection(),
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildFeaturePill(),
+                      const SizedBox(height: 8),
+                      Text(
+                        property.name,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                          height: 1.2,
                         ),
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-
-                    const SizedBox(height: 4),
-
-                    // Property Type
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        selectedproperty.propertyType,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade600,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      const SizedBox(height: 4),
+                      Text(
+                        property.propertyType,
+                        style: TextStyle(color: Colors.grey.shade600),
                       ),
-                    ),
+                      const SizedBox(height: 8),
+                      _buildLocationRow(),
+                      const SizedBox(height: 16),
 
-                    const SizedBox(height: 8),
-
-                    // Location
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5),
-                      child: Row(
+                      /// PRICE + CONDITIONAL BUTTON (SAME AS RENT)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Icon(
-                            Icons.location_on,
-                            size: 16,
-                            color: Colors.grey.shade600,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              selectedproperty.location,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade600,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+                          _buildPriceSection(),
+                          isBooked
+                              ? _buildBookingDetailsButton(context)
+                              : _buildViewDetailsButton(context),
                         ],
                       ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    // Price & View Details
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.blue.shade50,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: Colors.blue.shade100,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.currency_rupee,
-                                    size: 18,
-                                    color: Colors.blue.shade700,
-                                  ),
-                                  const SizedBox(width: 2),
-                                  Text(
-                                    selectedproperty.amount,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue.shade700,
-                                    ),
-                                  ),
-                                  Text(
-                                    "/month",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.blue.shade600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        // View Details Button
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: AppColor.forgot,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "View Details",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(width: 4),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  size: 14,
-                                  color: Colors.white,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
-            // Status Banner
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: bg,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(20),
-                    bottomLeft: Radius.circular(15),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+            _buildStatusBanner(
+              statusBg,
+              statusTextColor,
+              statusIcon,
+              displayStatus,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ---------------- NAVIGATION ----------------
+
+  void _navigateToViewDetails(BuildContext context) {
+    final provider = Provider.of<SellFormProvider>(context, listen: false);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SellpropertyDetailsScreen(
+          property: property,
+          propertyStream: provider.getPropertyStream(property.id!),
+        ),
+      ),
+    );
+  }
+
+  void _navigateToBookingDetails(
+    BuildContext context,
+    String propertyId,
+  ) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MyBookingsScreen(propertyId: propertyId),
+      ),
+    );
+  }
+
+  // ---------------- UI COMPONENTS ----------------
+Widget _buildImageSection() {
+  final String imageUrl = property.photoPath.isNotEmpty
+      ? property.photoPath.first
+      : '';
+
+  return Stack(
+    children: [
+      ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        child: SizedBox(
+          height: 180,
+          width: double.infinity,
+          child: imageUrl.isEmpty
+              ? _buildPlaceholder()
+              : Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 180,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    // Image loaded instantly → show image
+                    if (loadingProgress == null) return child;
+
+                    // Image taking time → show placeholder
+                    return _buildPlaceholder();
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return _buildPlaceholder();
+                  },
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      icon,
-                      size: 16,
-                      color: textColor,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      displayStatus,
-                      style: TextStyle(
-                        color: textColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
+        ),
+      ),
+
+      // Gradient Overlay
+      Positioned.fill(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withOpacity(0.3),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+
+Widget _buildPlaceholder() {
+  return Container(
+    height: 180,
+    color: Colors.grey.shade200,
+    alignment: Alignment.center,
+    child: Image.asset(
+      'assets/img/pictures.png',
+      width: 80,
+      height: 80,
+      fit: BoxFit.contain,
+    ),
+  );
+}
+
+
+  Widget _buildLocationRow() {
+    return Row(
+      children: [
+        Icon(Icons.location_on, size: 14, color: Colors.grey.shade600),
+        const SizedBox(width: 4),
+        Expanded(
+          child: Text(
+            property.location,
+            style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPriceSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.currency_rupee, size: 16, color: Colors.blue.shade700),
+            Text(
+              property.amount,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue.shade700,
+              ),
+            ),
+          ],
+        ),
+        Text(
+          "Selling Price",
+          style: TextStyle(fontSize: 11, color: Colors.blue.shade600),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildViewDetailsButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () => _navigateToViewDetails(context),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColor.forgot,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
+      icon: const Icon(Icons.arrow_forward, size: 16),
+      label: const Text(
+        "View Details",
+        style: TextStyle(fontSize: 12),
+      ),
+    );
+  }
+
+  Widget _buildBookingDetailsButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () =>
+          _navigateToBookingDetails(context, property.id!),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.orange.shade800,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
+      icon: const Icon(Icons.receipt_long, size: 16),
+      label: const Text(
+        "Booking Details",
+        style: TextStyle(fontSize: 12),
+      ),
+    );
+  }
+
+  Widget _buildStatusBanner(
+    Color bg,
+    Color textColor,
+    IconData icon,
+    String label,
+  ) {
+    return Positioned(
+      top: 0,
+      right: 0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(20),
+            bottomLeft: Radius.circular(15),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 14, color: textColor),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],
@@ -327,42 +329,21 @@ class PropertyCardSell extends StatelessWidget {
     );
   }
 
-  Widget _buildFeaturePill(PropertycardFormModel property) {
+  Widget _buildFeaturePill() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.green.shade200, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: Colors.green.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.green.shade200),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              color: Colors.green.shade500,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(Icons.check, size: 10, color: Colors.white),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            property.furnished,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.green.shade700,
-            ),
-          ),
-        ],
+      child: Text(
+        property.furnished,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: Colors.green.shade700,
+        ),
       ),
     );
   }

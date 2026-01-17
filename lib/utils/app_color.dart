@@ -17,4 +17,6 @@ static final Color red=Color(0xFFDC2626);
 static final Color transperent=Colors.transparent;
 static final Color pink=Color.fromARGB(255, 169, 106, 224);
 static final Color alert=Color.fromARGB(255, 243, 74, 102);
+
+  static Color? get primary => null;
 }

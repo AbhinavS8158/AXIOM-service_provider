@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:service_provider/controller/provider/auth/login_provider.dart';
 import 'package:service_provider/controller/provider/auth/signup_provider.dart';
 import 'package:service_provider/utils/app_color.dart';
 import 'package:service_provider/view/screen/login/login_screen.dart';
@@ -23,33 +22,34 @@ class SignUp extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => Wrap(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.camera_alt),
-            title: const Text("Take Photo"),
-            onTap: () {
-              Navigator.pop(context);
-              provider.pickImage(ImageSource.camera);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.photo),
-            title: const Text("Choose from Gallery"),
-            onTap: () {
-              Navigator.pop(context);
-              provider.pickImage(ImageSource.gallery);
-            },
-          ),
-        ],
-      ),
+      builder: (_) {
+        return Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Take Photo"),
+              onTap: () {
+                Navigator.pop(context);
+                provider.pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo),
+              title: const Text("Choose from Gallery"),
+              onTap: () {
+                Navigator.pop(context);
+                provider.pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<SignUpProvider>();
-    final loginController = context.read<LoginController>();
 
     return Scaffold(
       body: SafeArea(
@@ -63,6 +63,7 @@ class SignUp extends StatelessWidget {
                 children: [
                   const SizedBox(height: 20),
 
+                  // ---------------- PROFILE IMAGE ----------------
                   Center(
                     child: GestureDetector(
                       onTap: () => _showImageSourceDialog(context),
@@ -73,37 +74,49 @@ class SignUp extends StatelessWidget {
                             ? FileImage(provider.pickedImage!)
                             : null,
                         child: provider.pickedImage == null
-                            ? const Icon(Icons.add_a_photo,
-                                size: 40, color: Colors.grey)
+                            ? const Icon(
+                                Icons.add_a_photo,
+                                size: 40,
+                                color: Colors.grey,
+                              )
                             : null,
                       ),
                     ),
                   ),
 
                   const SizedBox(height: 20),
+
                   const Text(
                     "Create an account",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppColor.login),
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: AppColor.login,
+                    ),
                   ),
+
                   const SizedBox(height: 10),
+
                   const Text(
                     "Fill the details below to sign up",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 15, color: Colors.black54),
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black54,
+                    ),
                   ),
 
                   const SizedBox(height: 30),
 
+                  // ---------------- FORM FIELDS ----------------
                   const Label(text: "Username"),
                   CustomTextField(
                     controller: provider.usernameController,
                     validator: provider.validateUsername,
                     hint: "John Doe",
                   ),
+
                   const SizedBox(height: 20),
 
                   const Label(text: "Email"),
@@ -112,6 +125,7 @@ class SignUp extends StatelessWidget {
                     validator: provider.validateEmail,
                     hint: "example@gmail.com",
                   ),
+
                   const SizedBox(height: 20),
 
                   const Label(text: "Phone Number"),
@@ -121,6 +135,7 @@ class SignUp extends StatelessWidget {
                     hint: "9876543210",
                     keyboardType: TextInputType.phone,
                   ),
+
                   const SizedBox(height: 20),
 
                   const Label(text: "Password"),
@@ -131,6 +146,7 @@ class SignUp extends StatelessWidget {
                     hint: "********",
                     toggleVisibility: provider.togglePasswordVisibility,
                   ),
+
                   const SizedBox(height: 20),
 
                   const Label(text: "Confirm Password"),
@@ -145,12 +161,15 @@ class SignUp extends StatelessWidget {
 
                   const SizedBox(height: 40),
 
+                  // ---------------- SUBMIT BUTTON ----------------
                   ElevatedButton(
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        provider.submitForm(context);
-                      }
-                    },
+                    onPressed: provider.isLoading
+                        ? null
+                        : () {
+                            if (formKey.currentState!.validate()) {
+                              provider.submitForm(context);
+                            }
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColor.loginbt,
                       foregroundColor: Colors.white,
@@ -159,27 +178,50 @@ class SignUp extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text("CREATE ACCOUNT",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: provider.isLoading
+                        ? const SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            "CREATE ACCOUNT",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
 
                   const SizedBox(height: 16),
 
+                  // ---------------- LOGIN LINK ----------------
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Already have an account? ",
-                          style: TextStyle(color: Colors.black54)),
+                      const Text(
+                        "Already have an account? ",
+                        style: TextStyle(color: Colors.black54),
+                      ),
                       GestureDetector(
-                        onTap: () => Navigator.push(
+                        onTap: () {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const LoginScreen())),
-                        child: const Text("Log in",
-                            style: TextStyle(
-                                color: AppColor.forgot,
-                                fontWeight: FontWeight.w600)),
+                              builder: (_) => const LoginScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Log in",
+                          style: TextStyle(
+                            color: AppColor.forgot,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ],
                   ),
