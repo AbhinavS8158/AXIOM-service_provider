@@ -6,6 +6,8 @@ class ProviderChatProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final TextEditingController messageController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
+
   final List<ChatMessage> messages = [];
 
   late String chatId;
@@ -71,12 +73,24 @@ class ProviderChatProvider extends ChangeNotifier {
         }));
 
       notifyListeners();
+        Future.delayed(const Duration(milliseconds: 100), scrollToBottom);
     });
   }
+  void scrollToBottom() {
+  if (!scrollController.hasClients) return;
+
+  scrollController.animateTo(
+    scrollController.position.maxScrollExtent,
+    duration: const Duration(milliseconds: 300),
+    curve: Curves.easeOut,
+  );
+}
+
 
   @override
   void dispose() {
     messageController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 }

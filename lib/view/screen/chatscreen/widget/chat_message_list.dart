@@ -12,6 +12,7 @@ class ChatMessagesList extends StatelessWidget {
       child: Consumer<ProviderChatProvider>(
         builder: (_, provider, __) {
           return ListView.builder(
+            controller: provider.scrollController,
             padding: const EdgeInsets.all(16),
             itemCount: provider.messages.length,
             itemBuilder: (context, index) {
