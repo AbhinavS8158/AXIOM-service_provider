@@ -1,5 +1,6 @@
 
   import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:service_provider/view/screen/booking_card/widgets/build_modern_info_row.dart';
 
 Widget buildBookingDetailsCard(booking) {
@@ -56,7 +57,7 @@ Widget buildBookingDetailsCard(booking) {
           buildModernInfoRow(
             Icons.calendar_today,
             "Move-in Date",
-            booking.movein.toString(),
+           DateFormat('dd/MMM/yyyy').format(booking.movein),
             Colors.teal,
           ),
         ],
