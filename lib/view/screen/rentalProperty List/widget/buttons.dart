@@ -17,7 +17,8 @@ class RButtons extends StatelessWidget {
     final controller = Provider.of<RentalFormProvider>(context, listen: false);
 
     // Show update button only when status != '1' (works for int or String)
-    final bool showUpdate = property.status?.toString() != '1';
+    // final bool showUpdate = property.status?.toString() != '1';
+    final bool showUpdate =property.bookingstatus!= "booked";
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,7 +40,7 @@ class RButtons extends StatelessWidget {
             child: const Text('update', style: TextStyle(color: Colors.white)),
           ),
           const SizedBox(width: 30),
-        ],
+      ],
 
         ElevatedButton(
           onPressed: () async {

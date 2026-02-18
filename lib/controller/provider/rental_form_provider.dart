@@ -219,6 +219,8 @@ class RentalFormProvider extends ChangeNotifier {
         'amenities': selectedAmenities,
         'bedroom': bedroom,
         'bathroom': bathroom,
+        'status':"0",
+        
       });
       notifyListeners();
     } finally {
