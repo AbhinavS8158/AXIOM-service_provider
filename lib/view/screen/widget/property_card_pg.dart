@@ -12,7 +12,6 @@ class PropertyCardPg extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedproperty = property;
 
-    // Determine status UI dynamically
     Color bg;
     Color textColor;
     IconData icon;
@@ -20,19 +19,19 @@ class PropertyCardPg extends StatelessWidget {
 
     switch (selectedproperty.status) {
       case '1':
-        bg = const Color(0xFF059669); // Accepted
+        bg = const Color(0xFF059669);
         textColor = Colors.white;
         icon = Icons.check_circle;
         displayStatus = 'Approved';
         break;
       case '2':
-        bg = const Color(0xFFDC2626); // Rejected
+        bg = const Color(0xFFDC2626); 
         textColor = Colors.white;
         icon = Icons.cancel;
         displayStatus = 'Rejected';
         break;
       default:
-        bg = const Color(0xFFF59E0B); // Pending
+        bg = const Color(0xFFF59E0B); 
         textColor = Colors.white;
         icon = Icons.schedule;
         displayStatus = 'Pending';
@@ -71,7 +70,7 @@ class PropertyCardPg extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Image
+             
                 Stack(
                   children: [
                     ClipRRect(
@@ -121,7 +120,7 @@ class PropertyCardPg extends StatelessWidget {
                   ],
                 ),
 
-                // Content
+             
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -170,7 +169,7 @@ class PropertyCardPg extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
 
-                      // Price & Details Button
+                    
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -238,7 +237,7 @@ class PropertyCardPg extends StatelessWidget {
               ],
             ),
 
-            // Status Badge
+        
             Positioned(
               top: 0,
               right: 0,

@@ -16,9 +16,9 @@ class TransactionServices {
 
     return _firestore
         .collection('transactions')
-        // Uncomment if you want only current user
+       
          .where('ownerId', isEqualTo: uid)
-        //  .where('propertyId' isEqualTo: )
+    
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {

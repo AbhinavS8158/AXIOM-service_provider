@@ -30,7 +30,7 @@ class ChatInputBar extends StatelessWidget {
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.newline,
                     minLines: 1,
-                    maxLines: 5, // limit height growth
+                    maxLines: 5, 
                     decoration: InputDecoration(
                       hintText: "Reply to user...",
                       filled: true,

@@ -41,31 +41,30 @@ class UpdateRentalForm extends StatelessWidget {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
-        // initialize rental form provider (populates controllers + fields)
+  
         rentalFormProvider.initializeFromProperty(property);
         rentalFormProvider.documentId = property.id;
 
-        // initialize property type provider if available
+    
         try {
           propertyTypeProvider.initializeFromProperty(property);
         } catch (_) {}
 
-        // set location controller if empty
+        
         if ((locationProvider.locationController.text).isEmpty && (property.location?.isNotEmpty ?? false)) {
           locationProvider.locationController.text = property.location ?? '';
         }
 
-        // copy remote photo urls into photo picker provider's updatePhotos list
+      
         try {
           photoPickerProvider.updatePhotos = List<String>.from(property.photoPath ?? []);
         } catch (_) {}
 
-        // set amenities selection from property
         try {
           amenitiesProvider.setSelectedFromProperty(property.amenities);
         } catch (_) {}
       } catch (_) {
-        // non-fatal: ignore initialization errors
+
       }
     });
   }
@@ -93,7 +92,7 @@ class UpdateRentalForm extends StatelessWidget {
         const SnackBar(content: Text('Property deleted successfully.'), backgroundColor: Colors.green),
       );
 
-      // return to previous screen indicating deletion (optional)
+ 
       Navigator.of(context).pop(true);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -104,14 +103,14 @@ class UpdateRentalForm extends StatelessWidget {
     }
   }
 
-  /// Clear local form-related providers after successful update.
+
   void _clearFormState(BuildContext context) {
-    // RentalFormProvider
+
     final rentProvider = Provider.of<RentalFormProvider>(context, listen: false);
     try {
-      rentProvider.clearAllFields(); // if you added clearAllFields() as suggested
+      rentProvider.clearAllFields();
     } catch (_) {
-      // fallback: call resetForm to at least clear controllers
+      
       try {
         rentProvider.resetForm();
         rentProvider.isInitialized = false;
@@ -119,33 +118,28 @@ class UpdateRentalForm extends StatelessWidget {
       } catch (_) {}
     }
 
-    // PropertyTypeProvider
+    
     final propertyTypeProvider = Provider.of<PropertyTypeProvider>(context, listen: false);
     try {
       propertyTypeProvider.clearSelections();
     } catch (_) {}
 
-    // AmenitiesProvider
+    
     final amenitiesProvider = Provider.of<AmenitiesProvider>(context, listen: false);
     try {
       amenitiesProvider.clearSelectedAmenities();
       amenitiesProvider.resetSyncFlag();
     } catch (_) {}
 
-    // PhotoPickerProvider
     final photoPickerProvider = Provider.of<PhotoPickerProvider>(context, listen: false);
     try {
-      // If your provider exposes a clear/reset method use it
-      photoPickerProvider.clearAll(); // defensive call; wrap in try/catch
+      photoPickerProvider.clearAll(); 
     } catch (_) {
       try {
         photoPickerProvider.updatePhotos = [];
-        // if images list is public:
-        // photoPickerProvider.images.clear();
       } catch (_) {}
     }
 
-    // LocationProvider
     final locationProvider = Provider.of<LocationProvider>(context, listen: false);
     try {
       locationProvider.locationController.clear();
@@ -165,7 +159,6 @@ class UpdateRentalForm extends StatelessWidget {
     final formKey = rentalFormProvider.formKey;
     final cloudinary = CloudinaryService();
 
-    // Approved if status == '1' (works for both String and int).
     final bool isApproved = property.status?.toString() == '1';
 
     Widget buildUpdateButton() {
@@ -189,7 +182,6 @@ class UpdateRentalForm extends StatelessWidget {
                       rentFormProvider.setLoading(true);
 
                       try {
-                        // bedroom/bathroom validation (uses propertyTypeProvider)
                         if (propertyTypeProvider.bedroom <= 0 || propertyTypeProvider.bathroom <= 0) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -201,7 +193,6 @@ class UpdateRentalForm extends StatelessWidget {
                           return;
                         }
 
-                        // Build final image URLs: prefer updatePhotos (remote) else upload local file
                         final List<String> finalImageUrls = [];
                         final imagesList = photoPickerProvider.images;
                         final urlsList = photoPickerProvider.updatePhotos;
@@ -227,7 +218,7 @@ class UpdateRentalForm extends StatelessWidget {
                                 return;
                               }
                             } else {
-                              continue; // placeholder or null
+                              continue; 
                             }
                           }
                         }
@@ -236,7 +227,6 @@ class UpdateRentalForm extends StatelessWidget {
                           finalImageUrls.addAll(property.photoPath!);
                         }
 
-                        // set provider values from controllers and helper providers
                         rentFormProvider
                           ..setName(rentFormProvider.nameController.text)
                           ..setPropertyType(propertyTypeProvider.selectedPropertyType?.toString() ?? property.propertyType)
@@ -252,10 +242,8 @@ class UpdateRentalForm extends StatelessWidget {
                           ..setBedroom(propertyTypeProvider.bedroom?.toString() ?? property.bedroom)
                           ..setBathroom(propertyTypeProvider.bathroom?.toString() ?? property.bathroom);
 
-                        // persist update
                         await rentFormProvider.update(property.id!);
 
-                        // clear local UI state so next time it's fresh
                         _clearFormState(context);
 
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -265,7 +253,6 @@ class UpdateRentalForm extends StatelessWidget {
                           ),
                         );
 
-                        // close and return updated property (caller may refresh)
                         Navigator.pop(context, property);
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -417,7 +404,6 @@ class UpdateRentalForm extends StatelessWidget {
                 CustomCard(child: AmenitiesGrid(property: property)),
                 const SizedBox(height: 30),
 
-                // Buttons area:
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                  child:  Row(

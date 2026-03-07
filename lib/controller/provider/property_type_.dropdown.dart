@@ -11,7 +11,6 @@ class PropertyTypeProvider extends ChangeNotifier {
   String? _powerBackUp = "";
   String? _parking = "";
 
-  // 👇 Track which property id was initialized
   String? _initializedPropertyId;
 
   String? get selectedPropertyType => _selectedPropertyType;
@@ -77,7 +76,6 @@ class PropertyTypeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Initialize property data only once per property id
   void initializeFromProperty(PropertycardFormModel property) {
     if (_initializedPropertyId == property.id) return;
 
@@ -96,7 +94,7 @@ class PropertyTypeProvider extends ChangeNotifier {
   }
 
   void clearSelections() {
-    _initializedPropertyId = null; // FIXED HERE
+    _initializedPropertyId = null; 
     _selectedPropertyType = null;
     _furnished = null;
     _powerBackUp = null;

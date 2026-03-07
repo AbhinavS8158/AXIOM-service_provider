@@ -25,14 +25,10 @@ class ProviderChatScreen extends StatelessWidget {
                 ..initChat(chatId: chatId, providerId: providerId),
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
-        // ---------------- APP BAR ----------------
        appBar: ChatAppBar(userName: userName, userImage: userImage),
-        // ---------------- BODY ----------------
         body: Column(
           children: [
-            // ---------------- MESSAGE LIST ----------------
            ChatMessagesList(),
-            // ---------------- INPUT ----------------
             ChatInputBar()
           ],
         ),

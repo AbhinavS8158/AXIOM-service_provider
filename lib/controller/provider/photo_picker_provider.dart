@@ -11,12 +11,10 @@ class PhotoPickerProvider extends ChangeNotifier {
   List<String> updatePhotos = [];
   final ImagePicker _picker = ImagePicker();
 
-  // Assuming CloudinaryService exists and is functional
   final CloudinaryService _cloudinaryService = CloudinaryService();
 
   List<File> get images => _images;
 
-  /// 📸 Single image from Camera or Gallery
   Future<void> pickImage(ImageSource source) async {
     try {
       if (_images.length >= 10) return;
@@ -31,7 +29,6 @@ class PhotoPickerProvider extends ChangeNotifier {
 
       if (pickedFile != null) {
         final imageFile = File(pickedFile.path);
-        // Note: Mock Cloudinary service will return a placeholder URL
         final imageUrl = await _cloudinaryService.uploadImage(imageFile);
 
         _images.add(imageFile);
@@ -45,7 +42,6 @@ class PhotoPickerProvider extends ChangeNotifier {
     }
   }
 
-  /// 🖼️ Multiple image picker (Gallery)
   Future<void> pickMultipleImages() async {
     try {
       final remainingSlots = 10 - _images.length;
@@ -57,7 +53,6 @@ class PhotoPickerProvider extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
 
-      // Pick multiple images from gallery
       final List<XFile> pickedFiles = await _picker.pickMultiImage(
         imageQuality: 80,
       );
@@ -68,14 +63,11 @@ class PhotoPickerProvider extends ChangeNotifier {
         return;
       }
 
-      // Limit to remaining allowed slots
       final filesToAdd = pickedFiles.take(remainingSlots).toList();
 
-      // 🚀 Upload all in parallel
       final uploadResults = await Future.wait(
         filesToAdd.map((pickedFile) async {
           final imageFile = File(pickedFile.path);
-          // Note: Mock Cloudinary service will return a placeholder URL
           final imageUrl = await _cloudinaryService.uploadImage(imageFile);
           return {'file': imageFile, 'url': imageUrl};
         }),
@@ -95,7 +87,6 @@ class PhotoPickerProvider extends ChangeNotifier {
     }
   }
 
-  /// 🔄 Update existing image at specific index
   Future<void> updateImage(int index, ImageSource source) async {
     try {
       if (index < 0 || index >= _images.length) return;
@@ -129,7 +120,6 @@ class PhotoPickerProvider extends ChangeNotifier {
     }
   }
 
-  /// ❌ Remove image and its Cloudinary URL
   void removeImage(int index) {
     if (index >= 0 && index < _images.length) {
       _images.removeAt(index);
@@ -139,7 +129,6 @@ class PhotoPickerProvider extends ChangeNotifier {
     }
   }
 
-  /// 📷 For editing pre-existing Cloudinary images
   void setInitialPhotos(List<String> photos) {
     updatePhotos
       ..clear()
@@ -154,7 +143,6 @@ class PhotoPickerProvider extends ChangeNotifier {
     }
   }
 
-  /// 🧹 Clear all picked images and URLs
   void clearImages() {
     _images.clear();
     updatePhotos.clear();

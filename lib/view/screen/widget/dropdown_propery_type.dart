@@ -12,7 +12,6 @@ class DropdownProperyType extends StatelessWidget {
   Widget build(BuildContext context) {
     final propertyTypeProvider = Provider.of<PropertyTypeProvider>(context);
 
-    // Determine what to show initially
     final selectedValue = (property?.propertyType != null &&
             property!.propertyType.isNotEmpty)
         ? property!.propertyType

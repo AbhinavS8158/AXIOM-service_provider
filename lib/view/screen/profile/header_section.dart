@@ -26,10 +26,8 @@ Widget buildHeader(SignUpModel user, {VoidCallback? onEditTap}) {
     ),
     child: Column(
       children: [
-        // Profile Image with Glow Effect
         Stack(
           children: [
-            // Glow effect
             Container(
               width: 110,
               height: 110,
@@ -44,7 +42,6 @@ Widget buildHeader(SignUpModel user, {VoidCallback? onEditTap}) {
                 ],
               ),
             ),
-            // Profile Image
             Container(
               width: 110,
               height: 110,
@@ -68,14 +65,12 @@ Widget buildHeader(SignUpModel user, {VoidCallback? onEditTap}) {
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) return child;
 
-                            // 🔄 Placeholder while loading
                             return Image.asset(
                               'assets/img/3d-rendered-user-icon-blue-circle (1).png',
                               fit: BoxFit.cover,
                             );
                           },
                           errorBuilder: (context, error, stackTrace) {
-                            // ❌ Fallback if image fails
                             return Image.asset(
                               'assets/img/pictures.png',
                               fit: BoxFit.cover,
@@ -93,7 +88,6 @@ Widget buildHeader(SignUpModel user, {VoidCallback? onEditTap}) {
 
         const SizedBox(height: 20),
 
-        // Username with fade-in effect styling
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
@@ -117,7 +111,6 @@ Widget buildHeader(SignUpModel user, {VoidCallback? onEditTap}) {
 
         const SizedBox(height: 6),
 
-        // Email
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
@@ -133,7 +126,6 @@ Widget buildHeader(SignUpModel user, {VoidCallback? onEditTap}) {
 
         const SizedBox(height: 18),
 
-        // Role Badge - Enhanced
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           decoration: BoxDecoration(
@@ -180,7 +172,6 @@ Widget buildHeader(SignUpModel user, {VoidCallback? onEditTap}) {
 
         const SizedBox(height: 20),
 
-        // Edit Profile Button - Premium Design
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25),
@@ -250,7 +241,6 @@ Widget buildHeader(SignUpModel user, {VoidCallback? onEditTap}) {
   );
 }
 
-// Alternative: Modern Minimalist Style
 Widget buildHeaderMinimalist(SignUpModel user, {VoidCallback? onEditTap}) {
   return Container(
     width: double.infinity,
@@ -264,11 +254,9 @@ Widget buildHeaderMinimalist(SignUpModel user, {VoidCallback? onEditTap}) {
     ),
     child: Column(
       children: [
-        // Profile Image Stack
         Stack(
           clipBehavior: Clip.none,
           children: [
-            // Main Profile Picture
             Hero(
               tag: 'profile_${user.email}',
               child: Container(
@@ -295,7 +283,7 @@ Widget buildHeaderMinimalist(SignUpModel user, {VoidCallback? onEditTap}) {
                 padding: const EdgeInsets.all(4),
                 child: ClipOval(
                   child: Container(
-                    width: 112, // radius * 2
+                    width: 112, 
                     height: 112,
                     color: Colors.grey.shade200,
                     child:
@@ -331,7 +319,6 @@ Widget buildHeaderMinimalist(SignUpModel user, {VoidCallback? onEditTap}) {
                 ),
               ),
             ),
-            // Floating Edit Button
             Positioned(
               bottom: 0,
               right: 0,
@@ -389,7 +376,6 @@ Widget buildHeaderMinimalist(SignUpModel user, {VoidCallback? onEditTap}) {
 
         const SizedBox(height: 20),
 
-        // Sleek Badge
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           decoration: BoxDecoration(
@@ -427,7 +413,6 @@ Widget buildHeaderMinimalist(SignUpModel user, {VoidCallback? onEditTap}) {
 
         const SizedBox(height: 24),
 
-        // Clean Edit Button
         TextButton.icon(
           onPressed: onEditTap,
           icon: const Icon(Icons.edit_outlined, size: 18),

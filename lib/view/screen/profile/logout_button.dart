@@ -38,17 +38,16 @@ void _showLogoutDialog(BuildContext context) {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context); // Close dialog
+              Navigator.pop(context); 
             },
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () async {
-              // 🔹 Add logout logic here later
-              // await FirebaseAuth.instance.signOut();
+            
 
-              Navigator.pop(context); // Close dialog
-              // Navigate to login screen if needed
+              Navigator.pop(context); 
+              
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,

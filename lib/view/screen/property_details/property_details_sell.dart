@@ -36,7 +36,6 @@ class SellpropertyDetailsScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // Use updated property if available, else fallback to initial property
           final selectedProperty = snapshot.data ?? property;
 
           return SingleChildScrollView(

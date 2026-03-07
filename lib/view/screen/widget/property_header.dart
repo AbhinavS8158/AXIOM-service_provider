@@ -7,7 +7,6 @@ class PropertyHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Decorative large circle
         Positioned(
           top: -20,
           right: -20,
@@ -21,7 +20,6 @@ class PropertyHeader extends StatelessWidget {
           ),
         ),
 
-        // Decorative small circle
         Positioned(
           top: 40,
           right: 60,
@@ -35,7 +33,6 @@ class PropertyHeader extends StatelessWidget {
           ),
         ),
 
-        // Title and subtitle section
         Positioned(
           bottom: 20,
           right: 230,

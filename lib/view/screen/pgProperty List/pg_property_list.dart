@@ -18,17 +18,13 @@ class PgPropertList extends StatelessWidget {
       backgroundColor: AppColor.bg,
       body: CustomScrollView(
         slivers: [
-          // 🔹 Custom Sliver App Bar
           PropertySliverAppBar(),
 
-          // 🔹 Search and Filter Section
           SliverSearchBar(
       onChanged: (value) {
-        // filter properties
       },
     ),
 
-          // 🔹 Properties List
           PropertiesSliverList(
   stream: provider.propertiesStream,
   itemBuilder: (property) => PropertyCardPg(property: property),

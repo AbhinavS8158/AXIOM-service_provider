@@ -30,7 +30,6 @@ class CustomSheet extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Small drag handle
               Container(
                 width: 50,
                 height: 5,
@@ -53,12 +52,10 @@ class CustomSheet extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Image selection options
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
-                    // 📸 Camera Option
                     Expanded(
                       child: OptionCard(
                         title: 'Camera',
@@ -79,7 +76,6 @@ class CustomSheet extends StatelessWidget {
                     ),
                     const SizedBox(width: 16),
 
-                    // 🖼️ Gallery Option (Multiple Images)
                     Expanded(
                       child: OptionCard(
                         title: 'Gallery',
@@ -93,7 +89,7 @@ class CustomSheet extends StatelessWidget {
                             Provider.of<PhotoPickerProvider>(
                               context,
                               listen: false,
-                            ).pickMultipleImages(); // ✅ Use multiple picker
+                            ).pickMultipleImages(); 
                           },
                         ),
                       ),
@@ -104,7 +100,6 @@ class CustomSheet extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // Cancel Button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextButton(

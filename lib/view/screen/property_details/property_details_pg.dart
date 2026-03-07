@@ -16,7 +16,6 @@ import 'package:service_provider/view/screen/rentalProperty%20List/widget/proper
 
 class PgPropertyDetailsScreen extends StatelessWidget {
   final PropertycardFormModel property;
-   // ignore: use_super_parameters, prefer_const_constructors_in_immutables
    PgPropertyDetailsScreen({Key? key, required this.property}) : super(key: key);
   
 

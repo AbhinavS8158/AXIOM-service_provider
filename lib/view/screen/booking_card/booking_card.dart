@@ -33,29 +33,23 @@ class BookingDetails extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header Section
                 bookingCardBuildHeader(),
                 const SizedBox(height: 24),
 
-                // Service Name Card
                 buildServiceCard(booking),
                 const SizedBox(height: 20),
 
-                // Customer Information Card
                 buildCustomerInfoCard(context,booking),
                 const SizedBox(height: 20),
 
-                // Booking Details Card
                 buildBookingDetailsCard(booking),
                 const SizedBox(height: 20),
 
-                // Message Card (if exists)
                 if (booking.message.isNotEmpty) ...[
                   buildMessageCard(booking),
                   const SizedBox(height: 20),
                 ],
 
-                // Payment Card
                 buildPaymentCard(booking),
                 const SizedBox(height: 20),
 

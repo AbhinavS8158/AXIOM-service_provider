@@ -11,7 +11,6 @@ class ChatListProvider extends ChangeNotifier {
 
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _subscription;
 
-  /// Fetch chats where current user is a participant
   void fetchChats(String currentUserId) {
     isLoading = true;
     notifyListeners();

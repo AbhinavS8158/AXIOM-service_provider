@@ -20,7 +20,6 @@ class AboutApp extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // App Logo
             AppInfoHeader(
               appName: 'Service Provider App',
               version: 'Version 1.2.0',

@@ -19,7 +19,6 @@ class RentPropertyListingScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF8FAFC),
       body: CustomScrollView(
         slivers: [
-          // Custom App Bar with gradient
           SliverAppBar(
             expandedHeight: 120,
             floating: false,
@@ -66,7 +65,6 @@ class RentPropertyListingScreen extends StatelessWidget {
                 ),
                 child: Stack(
                   children: [
-                    // Decorative circles
                     Positioned(
                       top: -20,
                       right: -20,
@@ -91,7 +89,6 @@ class RentPropertyListingScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Title
                     Positioned(
                       bottom: 20,
                     
@@ -145,13 +142,11 @@ class RentPropertyListingScreen extends StatelessWidget {
             ),
           ),
 
-          // Search and Filter Section
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // Search Bar
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -177,14 +172,13 @@ class RentPropertyListingScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  // Filter Chips
+                
                 
                 ],
               ),
             ),
           ),
 
-          // Properties List
           StreamBuilder<List<PropertycardFormModel>>(
             stream: provider.propertiesStream,
             builder: (context, snapshot) {
@@ -320,7 +314,6 @@ class RentPropertyListingScreen extends StatelessWidget {
             },
           ),
 
-          // Bottom padding
           const SliverToBoxAdapter(
             child: SizedBox(height: 20),
           ),

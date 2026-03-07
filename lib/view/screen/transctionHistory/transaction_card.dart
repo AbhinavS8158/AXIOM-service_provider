@@ -27,7 +27,6 @@ class TransactionCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // LEFT ICON
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -49,7 +48,6 @@ class TransactionCard extends StatelessWidget {
 
           const SizedBox(width: 16),
 
-          // CENTER DETAILS
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +81,6 @@ class TransactionCard extends StatelessWidget {
             ),
           ),
 
-          // RIGHT AMOUNT
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [

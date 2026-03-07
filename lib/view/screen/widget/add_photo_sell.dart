@@ -33,7 +33,6 @@ class AddPhotoSell extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // Main Photo Container with overlay
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -59,7 +58,6 @@ class AddPhotoSell extends StatelessWidget {
                     ],
                   ),
 
-                  // 🌀 Loading overlay during upload
                   if (photoProvider.isLoading)
                     Positioned.fill(
                       child: Container(
@@ -200,7 +198,7 @@ class AddPhotoSell extends StatelessWidget {
           padding: EdgeInsets.all(photoProvider.images.isEmpty ? 0 : 12),
           child: InkWell(
             onTap: photoProvider.isLoading
-                ? null // prevent multiple uploads while loading
+                ? null 
                 : () => _showCustomSheet(context),
             borderRadius: BorderRadius.vertical(
               bottom: const Radius.circular(12),

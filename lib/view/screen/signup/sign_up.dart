@@ -63,7 +63,6 @@ class SignUp extends StatelessWidget {
                 children: [
                   const SizedBox(height: 20),
 
-                  // ---------------- PROFILE IMAGE ----------------
                   Center(
                     child: GestureDetector(
                       onTap: () => _showImageSourceDialog(context),
@@ -109,7 +108,6 @@ class SignUp extends StatelessWidget {
 
                   const SizedBox(height: 30),
 
-                  // ---------------- FORM FIELDS ----------------
                   const Label(text: "Username"),
                   CustomTextField(
                     controller: provider.usernameController,
@@ -161,7 +159,6 @@ class SignUp extends StatelessWidget {
 
                   const SizedBox(height: 40),
 
-                  // ---------------- SUBMIT BUTTON ----------------
                   ElevatedButton(
                     onPressed: provider.isLoading
                         ? null
@@ -198,7 +195,6 @@ class SignUp extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  // ---------------- LOGIN LINK ----------------
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

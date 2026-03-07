@@ -18,7 +18,7 @@ class PropertyCardSell extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isBooked = property.bookingstatus == 'booked';
 
-    // Status UI
+
     Color statusBg;
     Color statusTextColor;
     IconData statusIcon;
@@ -90,7 +90,6 @@ class PropertyCardSell extends StatelessWidget {
                       _buildLocationRow(),
                       const SizedBox(height: 16),
 
-                      /// PRICE + CONDITIONAL BUTTON (SAME AS RENT)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -117,7 +116,6 @@ class PropertyCardSell extends StatelessWidget {
     );
   }
 
-  // ---------------- NAVIGATION ----------------
 
   void _navigateToViewDetails(BuildContext context) {
     final provider = Provider.of<SellFormProvider>(context, listen: false);
@@ -144,7 +142,6 @@ class PropertyCardSell extends StatelessWidget {
     );
   }
 
-  // ---------------- UI COMPONENTS ----------------
 Widget _buildImageSection() {
   final String imageUrl = property.photoPath.isNotEmpty
       ? property.photoPath.first
@@ -165,10 +162,8 @@ Widget _buildImageSection() {
                   width: double.infinity,
                   height: 180,
                   loadingBuilder: (context, child, loadingProgress) {
-                    // Image loaded instantly → show image
                     if (loadingProgress == null) return child;
 
-                    // Image taking time → show placeholder
                     return _buildPlaceholder();
                   },
                   errorBuilder: (context, error, stackTrace) {
@@ -178,7 +173,6 @@ Widget _buildImageSection() {
         ),
       ),
 
-      // Gradient Overlay
       Positioned.fill(
         child: Container(
           decoration: BoxDecoration(

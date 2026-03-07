@@ -11,13 +11,12 @@ class AmenitiesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AmenitiesProvider>(
       builder: (context, provider, _) {
-        // Sync once from the incoming property amenities (which is List<Map<String,dynamic>>).
-        // Do this only when a non-empty amenities list exists and we haven't synced yet.
+       
         if (property != null &&
             (property!.amenities.isNotEmpty) &&
             !provider.isSyncedFromProperty) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            // Defensive: ensure property still non-null when callback runs
+           
             if (property != null && property!.amenities.isNotEmpty) {
               provider.setSelectedFromProperty(property!.amenities);
             }

@@ -19,7 +19,6 @@ class BookingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Fetch booking by propertyId (already working)
   Future<void> fetchBookingByPropertyId(String propertyId) async {
     try {
       _setLoading(true);
@@ -33,7 +32,6 @@ class BookingProvider extends ChangeNotifier {
     }
   }
 
-  /// Listen to all bookings
   void listenToBookings() {
     _bookingServices.getBookings().listen((data) {
       _bookings = data;

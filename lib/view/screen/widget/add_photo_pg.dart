@@ -32,7 +32,6 @@ class AddPhotoPg extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // 🖼️ Main container with shadow and overlay
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -58,7 +57,6 @@ class AddPhotoPg extends StatelessWidget {
                     ],
                   ),
 
-                  // 🌀 Loading overlay while uploading
                   if (photoProvider.isLoading)
                     Positioned.fill(
                       child: Container(
@@ -95,7 +93,6 @@ class AddPhotoPg extends StatelessWidget {
     );
   }
 
-  // 🏠 Empty state widget when no photos exist
   Widget _buildEmptyPgState(BuildContext context) {
     return GestureDetector(
       onTap: () => _showCustomSheet(context),
@@ -138,7 +135,6 @@ class AddPhotoPg extends StatelessWidget {
     );
   }
 
-  // 🧩 Photo grid widget
   Widget _buildPhotoGrid(PhotoPickerProviderPg photoProvider) {
     return Padding(
       padding: const EdgeInsets.all(12),
@@ -190,7 +186,6 @@ class AddPhotoPg extends StatelessWidget {
     );
   }
 
-  // ➕ Add Photo button
   Widget _buildAddButton(BuildContext context) {
     return Consumer<PhotoPickerProviderPg>(
       builder: (context, photoProvider, child) {
@@ -202,7 +197,7 @@ class AddPhotoPg extends StatelessWidget {
           padding: EdgeInsets.all(photoProvider.images.isEmpty ? 0 : 12),
           child: InkWell(
             onTap: photoProvider.isLoading
-                ? null // Disable while uploading
+                ? null 
                 : () => _showCustomSheet(context),
             borderRadius: BorderRadius.vertical(
               bottom: const Radius.circular(12),

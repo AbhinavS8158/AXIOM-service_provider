@@ -48,7 +48,6 @@ Widget buildCustomerInfoCard(BuildContext context,booking) {
         ),
         const SizedBox(height: 20),
 
-        // Name
         _buildModernInfoRow(
           Icons.person_outline,
           "Name",
@@ -58,7 +57,6 @@ Widget buildCustomerInfoCard(BuildContext context,booking) {
 
         const SizedBox(height: 14),
 
-        // Phone (tap + copy)
         GestureDetector(
           onTap: () => _launchPhone(booking.phone),
           onLongPress: () =>
@@ -73,7 +71,6 @@ Widget buildCustomerInfoCard(BuildContext context,booking) {
 
         const SizedBox(height: 14),
 
-        // Email (tap + copy)
         GestureDetector(
           onTap: () => _launchEmail(booking.email),
           onLongPress: () =>

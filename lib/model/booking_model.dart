@@ -5,8 +5,8 @@ class BookingModel {
   final String propertyId;
   final String userId;
   final String bookingStatus;
-  final String name;          // property name
-  final String user;          // user name
+  final String name;          
+  final String user;          
   final String phone;
   final String email;
   final String totalAmount;

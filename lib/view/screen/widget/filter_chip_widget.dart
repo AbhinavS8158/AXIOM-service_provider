@@ -13,7 +13,6 @@ class FilterChipWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Access provider
     final filterProvider = Provider.of<FilterProvider>(context);
     final bool isSelected = filterProvider.selectedFilter == label;
 

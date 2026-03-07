@@ -5,8 +5,6 @@ import 'package:service_provider/model/propertycard_form_model.dart';
 import 'package:service_provider/utils/app_color.dart';
 import 'package:service_provider/view/screen/booking_details/booking%20details.dart';
 import 'package:service_provider/view/screen/property_details/property_details.dart';
-// Import your Booking Details screen here
-// import 'package:service_provider/view/screen/booking_details/booking_details_screen.dart';
 
 class PropertyCard extends StatelessWidget {
   final PropertycardFormModel property;
@@ -18,26 +16,25 @@ class PropertyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isBooked = property.bookingstatus == 'booked';
 
-    // Determine status UI dynamically
     Color statusBg;
     Color statusTextColor;
     IconData statusIcon;
     String displayStatus;
 
     switch (property.status) {
-      case '1': // Accepted
+      case '1': 
         statusBg = const Color(0xFF059669);
         statusTextColor = Colors.white;
         statusIcon = Icons.check_circle;
         displayStatus = 'Approved';
         break;
-      case '2': // Rejected
+      case '2': 
         statusBg = const Color(0xFFDC2626);
         statusTextColor = Colors.white;
         statusIcon = Icons.cancel;
         displayStatus = 'Rejected';
         break;
-      default: // Pending
+      default: 
         statusBg = const Color(0xFFF59E0B);
         statusTextColor = Colors.white;
         statusIcon = Icons.schedule;
@@ -91,13 +88,11 @@ class PropertyCard extends StatelessWidget {
                       _buildLocationRow(),
                       const SizedBox(height: 16),
                       
-                      // ACTION AREA: Price and the Conditional Button
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           _buildPriceSection(isBooked),
                           const SizedBox(width: 8),
-                          // Separate Buttons based on status
                           isBooked 
                             ? _buildBookingDetailsButton(context) 
                             : _buildViewDetailsButton(context),
@@ -115,7 +110,6 @@ class PropertyCard extends StatelessWidget {
     );
   }
 
-  // --- NAVIGATION METHODS ---
 
   void _navigateToViewDetails(BuildContext context) {
     final provider = Provider.of<RentalFormProvider>(context, listen: false);
@@ -144,7 +138,6 @@ void _navigateToBookingDetails(
 
 
 
-  // --- UI COMPONENTS ---
 
  Widget _buildImageSection() {
   final String imageUrl = property.photoPath.isNotEmpty
@@ -166,10 +159,8 @@ void _navigateToBookingDetails(
                   width: double.infinity,
                   height: 180,
                   loadingBuilder: (context, child, loadingProgress) {
-                    // Image loaded instantly → show image
                     if (loadingProgress == null) return child;
 
-                    // Image taking time → show placeholder
                     return _buildPlaceholder();
                   },
                   errorBuilder: (context, error, stackTrace) {
@@ -179,7 +170,6 @@ void _navigateToBookingDetails(
         ),
       ),
 
-      // Gradient Overlay
       Positioned.fill(
         child: Container(
           decoration: BoxDecoration(
@@ -249,7 +239,6 @@ Widget _buildPlaceholder() {
     );
   }
 
-  // SEPARATE BUTTON 1: View Details
   Widget _buildViewDetailsButton(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () => _navigateToViewDetails(context),
@@ -264,12 +253,11 @@ Widget _buildPlaceholder() {
     );
   }
 
-  // SEPARATE BUTTON 2: Booking Details
  Widget _buildBookingDetailsButton(BuildContext context) {
   return ElevatedButton.icon(
     onPressed: () => _navigateToBookingDetails(
       context,
-      property.id!, // ✅ pass propertyId correctly
+      property.id!, 
     ),
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.orange.shade800,

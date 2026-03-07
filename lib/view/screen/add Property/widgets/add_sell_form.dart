@@ -37,7 +37,6 @@ class AddSellForm extends StatelessWidget {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          // 🌀 Animated background
           SizedBox.expand(
             child: Lottie.asset(
               'assets/animation/Animation - 1746427682309.json',
@@ -46,7 +45,6 @@ class AddSellForm extends StatelessWidget {
             ),
           ),
 
-          // 🧾 Form content
           SafeArea(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -59,7 +57,7 @@ class AddSellForm extends StatelessWidget {
                     children: [
                       const SizedBox(height: 20),
 
-                      // 🏠 Basic Details
+            
                       SectionHeader(
                         title: 'Basic Details',
                         icon: Icons.villa_outlined,
@@ -128,7 +126,6 @@ class AddSellForm extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
-                      // ⚙️ Advanced Details
                       SectionHeader(
                         title: 'Advanced Details',
                         icon: Icons.settings_outlined,
@@ -177,7 +174,6 @@ class AddSellForm extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
-                      // 🌟 Amenities
                       SectionHeader(
                         title: 'Amenities',
                         icon: Icons.star_border_outlined,
@@ -203,7 +199,6 @@ class AddSellForm extends StatelessWidget {
 
                       const SizedBox(height: 30),
 
-                      // 🚀 Submit Button
                       Container(
                         width: double.infinity,
                         margin: const EdgeInsets.only(bottom: 30),
@@ -251,7 +246,6 @@ class AddSellForm extends StatelessWidget {
                                         final photoPickerProvider = context.read<PhotoPickerProviderSell>();
                                         final amenitiesProviderSell = context.read<AmenitiesSellProvider>();
 
-                                        // ✅ Validation checks
                                         if (propertyTypeProviderSell.bedroom <= 0 ||
                                             propertyTypeProviderSell.bathroom <= 0) {
                                           ScaffoldMessenger.of(context).showSnackBar(
@@ -283,7 +277,6 @@ class AddSellForm extends StatelessWidget {
                                           return;
                                         }
 
-                                        // ✅ Upload images
                                         List<String> imageUrls = [];
                                         for (var image in photoPickerProvider.images) {
                                           try {
@@ -300,7 +293,6 @@ class AddSellForm extends StatelessWidget {
                                           }
                                         }
 
-                                        // ✅ Save form data
                                         sellFormProvider
                                           ..setName(sellFormProvider.nameController.text)
                                           ..setPropertyType(propertyTypeProviderSell.selectedPropertyType ?? '')
@@ -322,10 +314,8 @@ class AddSellForm extends StatelessWidget {
                                           ..setBedroom(propertyTypeProviderSell.bedroom.toString())
                                           ..setBathroom(propertyTypeProviderSell.bathroom.toString());
 
-                                        // ✅ Save to Firestore
                                         await sellFormProvider.addToDb(context);
 
-                                        // ✅ Reset after success
                                         sellFormProvider.resetForm();
                                         photoPickerProvider.clearImages();
                                         propertyTypeProviderSell.resetSelections();
@@ -350,7 +340,6 @@ class AddSellForm extends StatelessWidget {
                                           ),
                                         );
 
-                                        // ✅ Navigate to sell list
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(

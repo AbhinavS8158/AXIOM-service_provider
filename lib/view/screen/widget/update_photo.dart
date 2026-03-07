@@ -28,7 +28,6 @@ class UpdatePhoto extends StatelessWidget {
       listen: false,
     );
 
-    // Call setInitialPhotos once after first frame if provider is empty and property has photos.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
         if (property != null &&
@@ -76,7 +75,6 @@ class UpdatePhoto extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    // show empty state or grid
                     if (photoProvider.updatePhotos.isEmpty)
                       photoProvider.isLoading
                           ? const Padding(
@@ -182,7 +180,6 @@ class UpdatePhoto extends StatelessWidget {
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) return child;
 
-                            // SHOW PLACEHOLDER WHILE LOADING
                             return Container(
                               width: 120,
                               height: 120,
@@ -223,7 +220,6 @@ class UpdatePhoto extends StatelessWidget {
                         ),
               ),
 
-              // index badge (bottom-left)
               Positioned(
                 left: 6,
                 bottom: 6,
@@ -237,7 +233,7 @@ class UpdatePhoto extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '${index + 1}', // 1-based index
+                    '${index + 1}', 
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -247,7 +243,6 @@ class UpdatePhoto extends StatelessWidget {
                 ),
               ),
 
-              // remove button (top-right)
               Positioned(
                 top: 6,
                 right: 6,
@@ -271,7 +266,6 @@ class UpdatePhoto extends StatelessWidget {
                 ),
               ),
 
-              // optional: make image tappable to open picker/preview (not changing existing behavior)
             ],
           );
         },

@@ -22,7 +22,6 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top Section with Background Pattern
               HomeHeader(),
 
               Padding(
@@ -32,7 +31,6 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     const SizedBox(height: 24),
 
-                    // Banner Image with Overlay
                     PropertyBanner(
                       imageAsset:
                           'assets/img/apartment-building-city-with-copy-space.jpg',
@@ -41,10 +39,8 @@ class HomeScreen extends StatelessWidget {
 
                     const SizedBox(height: 32),
 
-                    // Category Title with Description
                     PropertyCategoriesSection(),
                     const SizedBox(height: 32),
-                    // Logout Section
                     LogoutButton(onLogout: () => controller.logout(context)),
                     const SizedBox(height: 24),
                   ],

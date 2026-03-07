@@ -11,7 +11,7 @@ class CustomTabBar extends StatelessWidget {
     final tabProvider = Provider.of<TabNavProvider>(context);
     return DefaultTabController(
       length: 2,
-      initialIndex: tabProvider.currentIndex, // assuming you have this in provider
+      initialIndex: tabProvider.currentIndex, 
       child: Scaffold(
         appBar: AppBar(
           bottom: TabBar(

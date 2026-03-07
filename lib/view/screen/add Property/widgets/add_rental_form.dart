@@ -29,11 +29,9 @@ class AddRentalForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Ensure the form and related providers are cleared once when the page opens.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
         final rent = context.read<RentalFormProvider>();
-        // prefer full clearAllFields() if implemented; fallback to resetForm()
         try {
           rent.clearAllFields();
         } catch (_) {
@@ -61,7 +59,6 @@ class AddRentalForm extends StatelessWidget {
           am.resetSyncFlag();
         } catch (_) {}
       } catch (_) {
-        // ignore any error during the defensive reset
       }
     });
 
@@ -72,7 +69,6 @@ class AddRentalForm extends StatelessWidget {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          // Background animation
           SizedBox.expand(
             child: Lottie.asset(
               'assets/animation/Animation - 1746427682309.json',
@@ -81,7 +77,6 @@ class AddRentalForm extends StatelessWidget {
             ),
           ),
 
-          // Form content
           SafeArea(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -94,7 +89,7 @@ class AddRentalForm extends StatelessWidget {
                     children: [
                       const SizedBox(height: 20),
 
-                      // Basic details
+                  
                       const SectionHeader(
                         title: 'Basic Details',
                         icon: Icons.home_outlined,
@@ -162,7 +157,6 @@ class AddRentalForm extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
-                      // Advanced details
                       const SectionHeader(
                         title: 'Advanced Details',
                         icon: Icons.settings_outlined,
@@ -213,7 +207,6 @@ class AddRentalForm extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
-                      // Amenities
                       const SectionHeader(
                         title: 'Amenities',
                         icon: Icons.star_border_outlined,
@@ -239,7 +232,6 @@ class AddRentalForm extends StatelessWidget {
 
                       const SizedBox(height: 30),
 
-                      // Submit button
                       Container(
                         width: double.infinity,
                         margin: const EdgeInsets.only(bottom: 30),
@@ -258,7 +250,6 @@ class AddRentalForm extends StatelessWidget {
                               onPressed: rentFormProvider.isLoading
                                   ? null
                                   : () async {
-                                      // Validate form
                                       if (!formKey.currentState!.validate()) {
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
@@ -288,7 +279,6 @@ class AddRentalForm extends StatelessWidget {
                                         final photoPickerProvider = context.read<PhotoPickerProvider>();
                                         final amenitiesProvider = context.read<AmenitiesProvider>();
 
-                                        // Bedroom & Bathroom check
                                         if (propertyTypeProvider.bedroom <= 0 || propertyTypeProvider.bathroom <= 0) {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(
@@ -299,7 +289,6 @@ class AddRentalForm extends StatelessWidget {
                                           return;
                                         }
 
-                                        // Photo check
                                         if (photoPickerProvider.images.isEmpty) {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(
@@ -310,7 +299,6 @@ class AddRentalForm extends StatelessWidget {
                                           return;
                                         }
 
-                                        // Location check
                                         if (locationProvider.locationController.text.isEmpty) {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(
@@ -321,7 +309,6 @@ class AddRentalForm extends StatelessWidget {
                                           return;
                                         }
 
-                                        // Upload photos
                                         List<String> imageUrls = [];
                                         for (var image in photoPickerProvider.images) {
                                           try {
@@ -338,7 +325,6 @@ class AddRentalForm extends StatelessWidget {
                                           }
                                         }
 
-                                        // Save data into provider
                                         rentFormProvider
                                           ..setName(rentFormProvider.nameController.text)
                                           ..setPropertyType(propertyTypeProvider.selectedPropertyType ?? '')
@@ -359,10 +345,8 @@ class AddRentalForm extends StatelessWidget {
                                           ..setBedroom(propertyTypeProvider.bedroom.toString())
                                           ..setBathroom(propertyTypeProvider.bathroom.toString());
 
-                                        // Upload to Firestore
                                         await rentFormProvider.addtodb(context);
 
-                                        // Reset form & providers
                                         rentFormProvider.resetForm();
                                         try {
                                           photoPickerProvider.clearImages();
@@ -396,7 +380,6 @@ class AddRentalForm extends StatelessWidget {
                                           ),
                                         );
 
-                                        // Navigate to listing
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(

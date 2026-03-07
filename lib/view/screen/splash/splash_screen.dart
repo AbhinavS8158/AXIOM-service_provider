@@ -28,7 +28,6 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Trigger navigation after build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _navigate(context);
     });

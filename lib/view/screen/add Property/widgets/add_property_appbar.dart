@@ -24,7 +24,6 @@ class AddPropertyAppBar extends StatelessWidget
     );
   }
 
-  /// Required when using a custom AppBar widget
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + 48);
 }

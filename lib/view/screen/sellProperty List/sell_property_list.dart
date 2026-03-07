@@ -18,7 +18,6 @@ class SellPropertyList extends StatelessWidget {
       backgroundColor: AppColor.bg,
       body: CustomScrollView(
         slivers: [
-          // Custom Sliver App Bar
           SliverAppBar(
             expandedHeight: 120,
             pinned: true,
@@ -58,7 +57,6 @@ class SellPropertyList extends StatelessWidget {
                 ),
                  child: Stack(
                   children: [
-                    // Decorative circles
                     Positioned(
                       top: -20,
                       right: -20,
@@ -83,7 +81,6 @@ class SellPropertyList extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Title
                     Positioned(
                       bottom: 20,
                     
@@ -137,13 +134,11 @@ class SellPropertyList extends StatelessWidget {
             ),
           ),
 
-          // Search and Filter Section
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // Search Bar
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -168,14 +163,12 @@ class SellPropertyList extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  // Filter Chips
                 
                 ],
               ),
             ),
           ),
 
-          // Properties List
           StreamBuilder<List<PropertycardFormModel>>(
             stream: provider.propertiesStream,
             builder: (context, snapshot) {

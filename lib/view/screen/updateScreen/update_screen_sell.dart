@@ -38,7 +38,6 @@ class UpdateSellForm extends StatelessWidget {
     final amenitiesProvider = Provider.of<AmenitiesProvider>(context, listen: false);
     final sellFormProvider = Provider.of<SellFormProvider>(context, listen: false);
 
-    // Guarded initial fill — don't overwrite if user already typed
     if (sellFormProvider.nameController.text.isEmpty) {
       sellFormProvider.nameController.text = property.name ?? '';
     }
@@ -169,7 +168,6 @@ class UpdateSellForm extends StatelessWidget {
                 CustomCard(child: AmenitiesGrid(property: property)),
                 const SizedBox(height: 30),
 
-                // Submit button with loading indicator
                 SizedBox(
                   width: double.infinity,
                   child: Consumer<SellFormProvider>(
@@ -187,9 +185,8 @@ class UpdateSellForm extends StatelessWidget {
 
                                 sellProvider.setLoading(true);
                                 try {
-                                  // Build final image URLs: prefer already-uploaded URLs first, else upload local Files
                                   final List<String> finalImageUrls = [];
-                                  final imagesList = photoPickerProvider.images; // may be List<File>
+                                  final imagesList = photoPickerProvider.images; 
                                   final urlsList = photoPickerProvider.updatePhotos;
 
                                   final maxLen = imagesList.length > urlsList.length ? imagesList.length : urlsList.length;
@@ -214,7 +211,7 @@ class UpdateSellForm extends StatelessWidget {
                                           return;
                                         }
                                       } else {
-                                        continue; // skip placeholder/null
+                                        continue; 
                                       }
                                     }
                                   }
@@ -223,7 +220,7 @@ class UpdateSellForm extends StatelessWidget {
                                     finalImageUrls.addAll(property.photoPath!);
                                   }
 
-                                  // set values into provider
+                          
                                   sellProvider
                                     ..setName(sellProvider.nameController.text)
                                     ..setPropertyType(propertyTypeProvider.selectedPropertyType?.toString() ?? property.propertyType)

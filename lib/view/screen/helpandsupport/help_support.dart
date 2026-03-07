@@ -19,7 +19,6 @@ class HelpSupport extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Card
            HeaderCard(
             message: "Need help? Our support team help you.",
            ),

@@ -13,7 +13,6 @@ class LocationInputWidget extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Toggle buttons for location mode
             Row(
               children: [
                 Expanded(
@@ -97,7 +96,6 @@ class LocationInputWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             
-            // Location input field
             Stack(
               alignment: Alignment.centerRight,
               children: [
@@ -140,7 +138,6 @@ class LocationInputWidget extends StatelessWidget {
                   },
                 ),
                 
-                // Loading indicator for GPS fetch
                 if (locationProvider.isLoading)
                   const Positioned(
                     right: 16,
@@ -153,7 +150,6 @@ class LocationInputWidget extends StatelessWidget {
                     ),
                   ),
                 
-                // GPS refresh button when in GPS mode and location is already fetched
                 if (!locationProvider.isManualEntry && 
                     !locationProvider.isLoading &&
                     locationProvider.locationController.text.isNotEmpty)
@@ -188,7 +184,6 @@ class LocationInputWidget extends StatelessWidget {
               ],
             ),
             
-            // Helper text
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(

@@ -26,7 +26,7 @@ class BookingServices {
     return BookingModel.fromFirestore(doc.data(), doc.id);
   }
 
-  /// Stream for all user bookings (optional – keep if needed)
+
   Stream<List<BookingModel>> getBookings() {
     final uid = _auth.currentUser?.uid;
     if (uid == null) {

@@ -37,7 +37,6 @@ class AddPgForm extends StatelessWidget {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          // 🌀 Animated background
           SizedBox.expand(
             child: Lottie.asset(
               'assets/animation/Animation - 1746427682309.json',
@@ -46,7 +45,6 @@ class AddPgForm extends StatelessWidget {
             ),
           ),
 
-          // 📋 Form content
           SafeArea(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -59,7 +57,6 @@ class AddPgForm extends StatelessWidget {
                     children: [
                       const SizedBox(height: 20),
 
-                      // 🏠 Basic Details
                       SectionHeader(
                         title: 'Basic Details',
                         icon: Icons.home_outlined,
@@ -130,7 +127,6 @@ class AddPgForm extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
-                      // ⚙️ Advanced Details
                       SectionHeader(
                         title: 'Advanced Details',
                         icon: Icons.settings_outlined,
@@ -186,7 +182,6 @@ class AddPgForm extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
-                      // 🌟 Amenities
                       SectionHeader(
                         title: 'Amenities',
                         icon: Icons.star_border_outlined,
@@ -212,7 +207,6 @@ class AddPgForm extends StatelessWidget {
 
                       const SizedBox(height: 30),
 
-                      // 🚀 Submit Button
                       Container(
                         width: double.infinity,
                         margin: const EdgeInsets.only(bottom: 30),
@@ -231,7 +225,6 @@ class AddPgForm extends StatelessWidget {
                               onPressed: pgFormProvider.isLoading
                                   ? null
                                   : () async {
-                                      // ✅ Validate form
                                       if (!_formKey.currentState!.validate()) {
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
@@ -262,7 +255,7 @@ class AddPgForm extends StatelessWidget {
                                         final photoPickerProvider = context.read<PhotoPickerProviderPg>();
                                         final amenitiesProviderPg = context.read<AmenitiesPgProvider>();
 
-                                        // ✅ Check property details
+                                
                                         if (propertyTypeProviderPg.bedroom <= 0 ||
                                             propertyTypeProviderPg.bathroom <= 0) {
                                           ScaffoldMessenger.of(context).showSnackBar(
@@ -274,7 +267,7 @@ class AddPgForm extends StatelessWidget {
                                           return;
                                         }
 
-                                        // ✅ Check photos
+                      
                                         if (photoPickerProvider.images.isEmpty) {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(
@@ -285,7 +278,7 @@ class AddPgForm extends StatelessWidget {
                                           return;
                                         }
 
-                                        // ✅ Check location
+                                  
                                         if (locationProvider.locationController.text.isEmpty) {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(
@@ -296,7 +289,7 @@ class AddPgForm extends StatelessWidget {
                                           return;
                                         }
 
-                                        // ✅ Upload images
+                              
                                         List<String> imageUrls = [];
                                         for (var image in photoPickerProvider.images) {
                                           try {
@@ -313,7 +306,7 @@ class AddPgForm extends StatelessWidget {
                                           }
                                         }
 
-                                        // ✅ Save property details
+                          
                                         pgFormProvider
                                           ..setName(pgFormProvider.nameController.text)
                                           ..setPropertyType(propertyTypeProviderPg.selectedPropertyType ?? '')
@@ -335,17 +328,16 @@ class AddPgForm extends StatelessWidget {
                                                 .toList(),
                                           );
 
-                                        // ✅ Submit to DB
+                            
                                         await pgFormProvider.addtodb(context);
 
-                                        // ✅ Clear everything
+                                    
                                         pgFormProvider.resetForm();
                                         photoPickerProvider.clearImages();
                                         propertyTypeProviderPg.resetSelections();
                                         locationProvider.resetLocation();
                                         amenitiesProviderPg.clearSelectedAmenities();
 
-                                        // ✅ Success message
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
                                             content: Row(
@@ -365,7 +357,6 @@ class AddPgForm extends StatelessWidget {
                                           ),
                                         );
 
-                                        // ✅ Navigate to PG list
                                         Navigator.pushReplacement(
                                           context,
                                           PageRouteBuilder(

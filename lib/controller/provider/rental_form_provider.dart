@@ -231,7 +231,6 @@ class RentalFormProvider extends ChangeNotifier {
 
 
 
-  // --- Clean Up ---
   void resetForm() {
     clearAllFields();
   }

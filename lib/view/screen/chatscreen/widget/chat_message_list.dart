@@ -62,7 +62,6 @@ class ChatMessagesList extends StatelessWidget {
     );
   }
 
-  /// ---------- DATE HELPERS ----------
 
   String _formatDate(DateTime date) {
   final now = DateTime.now();

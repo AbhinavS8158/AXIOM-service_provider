@@ -19,7 +19,6 @@ class PropertiesSliverList extends StatelessWidget {
     return StreamBuilder<List<PropertycardFormModel>>(
       stream: stream,
       builder: (context, snapshot) {
-        // ---------------- LOADING ----------------
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SliverToBoxAdapter(
             child: Center(
@@ -44,7 +43,6 @@ class PropertiesSliverList extends StatelessWidget {
           );
         }
 
-        // ---------------- ERROR ----------------
         if (snapshot.hasError) {
           return const SliverToBoxAdapter(
             child: Center(
@@ -58,7 +56,6 @@ class PropertiesSliverList extends StatelessWidget {
 
         final properties = snapshot.data ?? [];
 
-        // ---------------- EMPTY ----------------
         if (properties.isEmpty) {
           return SliverToBoxAdapter(
             child: Center(
@@ -103,7 +100,6 @@ class PropertiesSliverList extends StatelessWidget {
           );
         }
 
-        // ---------------- LIST ----------------
         return SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           sliver: SliverList(

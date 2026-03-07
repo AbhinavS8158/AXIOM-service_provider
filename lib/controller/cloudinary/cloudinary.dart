@@ -14,7 +14,7 @@ class CloudinaryService {
         uploadPreset: 'my_file', 
       );
 
-      // log(response.secureUrl);
+    
       return response.secureUrl;
     } catch (e) {
       throw Exception('Error uploading image: $e');

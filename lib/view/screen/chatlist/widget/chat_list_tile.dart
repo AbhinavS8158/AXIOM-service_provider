@@ -20,7 +20,6 @@ class ChatListTile extends StatelessWidget {
   });
 
   String get formattedTime{
-    // return DateFormat('hh:mm a').format(time);
 
       final now = DateTime.now();
 
@@ -30,9 +29,9 @@ class ChatListTile extends StatelessWidget {
         now.day == time.day;
 
     if (isToday) {
-      return DateFormat('hh:mm a').format(time); // 10:45 AM
+      return DateFormat('hh:mm a').format(time); 
     } else {
-      return DateFormat('dd MMM').format(time); // 12 Jan
+      return DateFormat('dd MMM').format(time); 
     }
   }
   @override

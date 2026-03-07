@@ -26,7 +26,7 @@ class PgFormProvider extends ChangeNotifier {
   TextEditingController aboutcontroller = TextEditingController();
   TextEditingController amountcontroller = TextEditingController();
 
-  String? documentId; // For updating existing properties
+  String? documentId; 
   String name = '';
   String propertyType = '';
   List<String> photoPath = [];
@@ -37,7 +37,7 @@ class PgFormProvider extends ChangeNotifier {
   String amount = '';
   String furnished = '';
   String powerbackup = '';
-  String foodavailblity = ''; // Renamed from foodavailblity
+  String foodavailblity = ''; 
   String bedroom = '';
   String bathroom = '';
   List<Map<String, dynamic>> selectedAmenities = [];
@@ -162,7 +162,7 @@ Future<void> addtodb(BuildContext context) async {
   'timestamp': FieldValue.serverTimestamp(), 
   'collectiontype':CollectionName,
   'food':foodavailblity,
-  'bookingstatus':'not booked',          // ✅ THIS IS CORRECT
+  'bookingstatus':'not booked',        
 });
 
      await docRef.update({'id': docRef.id});

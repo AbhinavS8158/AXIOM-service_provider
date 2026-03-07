@@ -26,7 +26,6 @@ class AmenitiesProvider extends ChangeNotifier {
   }
 
  void setSelectedFromProperty(List<Map<String, dynamic>> amenitiesFromDB) {
-  // Extract only the names
   final selectedNames = amenitiesFromDB
       .map((e) => e['name']?.toString() ?? '')
       .toList();

@@ -14,7 +14,6 @@ class PropertySliverAppBar extends StatelessWidget {
       pinned: true,
       backgroundColor: AppColor.transperent,
 
-      // ---------------- BACK BUTTON ----------------
       leading: Container(
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
@@ -43,7 +42,6 @@ class PropertySliverAppBar extends StatelessWidget {
         ),
       ),
 
-      // ---------------- FLEXIBLE SPACE ----------------
       flexibleSpace: const FlexibleSpaceBar(
         background: DecoratedBox(
           decoration: BoxDecoration(

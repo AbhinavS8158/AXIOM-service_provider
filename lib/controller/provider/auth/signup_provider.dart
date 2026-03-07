@@ -135,10 +135,8 @@ bool isLoading = false;
     isLoading = true;
     notifyListeners();
 
-    // 1️⃣ Upload image (if selected)
     String? uploadedImageUrl = await uploadToCloudinary();
 
-    // 2️⃣ Firebase Auth signup
     UserCredential userCred = await _authService.register(
       emailController.text.trim(),
       passwordController.text.trim(),
@@ -146,7 +144,6 @@ bool isLoading = false;
 
     String uid = userCred.user!.uid;
 
-    // 3️⃣ Create model
     SignUpModel user = SignUpModel(
       uid: uid,
       username: usernameController.text.trim(),
@@ -156,10 +153,8 @@ bool isLoading = false;
       createdAt: DateTime.now(),
     );
 
-    // 4️⃣ Save to Firestore
     await _dbService.saveUser(user);
 
-    // 5️⃣ Success feedback
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text("Signup Successful!"),
@@ -167,13 +162,11 @@ bool isLoading = false;
       ),
     );
 
-    // 6️⃣ Navigate
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const LoginScreen()),
     );
 
-    // 7️⃣ Clear fields
     usernameController.clear();
     emailController.clear();
     phoneController.clear();
@@ -191,7 +184,6 @@ bool isLoading = false;
 }
 
 
-// --------------------- FETCH USER DATA (PROFILE) ---------------------
   Future<void> loadUserData() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -214,7 +206,6 @@ bool isLoading = false;
     }
   }
 
-  // --------------------- UPDATE PROFILE IMAGE ---------------------
 Future<void> updateProfileImage(BuildContext context) async {
   if (pickedImage == null) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -224,7 +215,6 @@ Future<void> updateProfileImage(BuildContext context) async {
   }
 
   try {
-    // Upload to Cloudinary
     String? newImageUrl = await uploadToCloudinary();
     if (newImageUrl == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -236,13 +226,11 @@ Future<void> updateProfileImage(BuildContext context) async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    // Update Firestore
     await FirebaseFirestore.instance
         .collection("service_provider")
         .doc(user.uid)
         .update({"profileImage": newImageUrl});
 
-    // Update provider values
     profileImageUrl = newImageUrl;
     pickedImage = null;
 

@@ -61,7 +61,6 @@ class AddPhoto extends StatelessWidget {
                       ],
                     ),
 
-                    // 🌀 Overlay while uploading
                     if (photoProvider.isLoading)
                       Positioned.fill(
                         child: Container(
@@ -202,7 +201,7 @@ class AddPhoto extends StatelessWidget {
           padding: EdgeInsets.all(photoProvider.images.isEmpty ? 0 : 12),
           child: InkWell(
             onTap: photoProvider.isLoading
-                ? null // prevent multiple uploads while loading
+                ? null 
                 : () => _showCustomSheet(context),
             borderRadius: BorderRadius.vertical(
               bottom: const Radius.circular(12),

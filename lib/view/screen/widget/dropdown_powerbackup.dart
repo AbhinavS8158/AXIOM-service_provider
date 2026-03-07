@@ -19,12 +19,10 @@ class DropdownPowerbackup extends StatelessWidget {
           'None'
         ];
 
-        // Get selected value
         String? selectValue = property?.powerbackup.isNotEmpty == true
             ? property!.powerbackup
             : provider.powerbackup;
 
-        // Ensure value exists in the list
         if (selectValue != null && !options.contains(selectValue)) {
           selectValue = null;
         }

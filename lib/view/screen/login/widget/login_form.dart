@@ -27,7 +27,6 @@ class LoginForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ---------------- EMAIL ----------------
         const Text(
           'Email',
           style: TextStyle(fontSize: 14, color: AppColor.blk),
@@ -53,7 +52,6 @@ class LoginForm extends StatelessWidget {
 
         const SizedBox(height: 20),
 
-        // ---------------- PASSWORD ----------------
         const Text(
           'Password',
           style: TextStyle(fontSize: 14, color: AppColor.blk),
@@ -95,7 +93,6 @@ class LoginForm extends StatelessWidget {
 
         const SizedBox(height: 10),
 
-        // ---------------- FORGOT PASSWORD ----------------
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -114,7 +111,6 @@ class LoginForm extends StatelessWidget {
 
         const SizedBox(height: 70),
 
-        // ---------------- LOGIN BUTTON ----------------
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
@@ -149,7 +145,6 @@ class LoginForm extends StatelessWidget {
 
         const SizedBox(height: 16),
 
-        // ---------------- SIGN UP ----------------
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

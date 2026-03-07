@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:service_provider/model/propertycard_form_model.dart';
 
 class SellFormProvider extends ChangeNotifier {
-  // 🧩 Controllers
   final TextEditingController nameController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
   final TextEditingController phonenumController = TextEditingController();
@@ -16,7 +15,6 @@ class SellFormProvider extends ChangeNotifier {
 
   final formKey = GlobalKey<FormState>();
 
-  // 🔧 Variables
   bool isLoading = false;
   bool isInitialized = false;
 
@@ -41,13 +39,11 @@ class SellFormProvider extends ChangeNotifier {
 
   final List<PropertycardFormModel> _properties = [];
 
-  // 🔹 Getters
   List<PropertycardFormModel> get properties => _properties;
 
   List<String> get selectedAmenitiesList =>
       selectedAmenities.map((e) => e['name'] as String).toList();
 
-  // 🔹 Firestore Stream for live updates
   Stream<PropertycardFormModel?> getPropertyStream(String id) {
     return FirebaseFirestore.instance
         .collection('sell_property')
@@ -57,7 +53,6 @@ class SellFormProvider extends ChangeNotifier {
             doc.exists ? PropertycardFormModel.fromJson(doc.data()!) : null);
   }
 
-  // 🔹 Setters
   void setName(String value) {
     name = value;
     notifyListeners();
@@ -160,7 +155,6 @@ class SellFormProvider extends ChangeNotifier {
     super.dispose();
   }
 
-  // 🧩 Initialize existing property (used for Edit)
   void initializeFromProperty(PropertycardFormModel property) {
     nameController.text = property.name;
     locationController.text = property.location;
@@ -188,7 +182,6 @@ class SellFormProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 🧠 Add new Sell Property to Firestore
   Future<void> addToDb(BuildContext context) async {
     try {
       final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -229,7 +222,6 @@ class SellFormProvider extends ChangeNotifier {
     }
   }
 
-  // 🗑 Delete property by document ID
   Future<void> deleteSellPropertyById(String documentId) async {
     final db = FirebaseFirestore.instance;
     try {
@@ -240,7 +232,6 @@ class SellFormProvider extends ChangeNotifier {
     }
   }
 
-  // 🔄 Update property data
   Future<void> update(String id) async {
     try {
       final docRef =

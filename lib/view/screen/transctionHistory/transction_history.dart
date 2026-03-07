@@ -26,14 +26,13 @@ class TransactionHistoryScreen extends StatelessWidget {
       body: StreamBuilder<List<TransactionModel>>(
         stream: transactionService.getTransactions(),
         builder: (context, snapshot) {
-          // 🔹 Loading
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          // 🔹 Error
+          
           if (snapshot.hasError) {
             return const Center(
               child: Text("Something went wrong"),
@@ -42,7 +41,6 @@ class TransactionHistoryScreen extends StatelessWidget {
 
           final transactions = snapshot.data ?? [];
 
-          // 🔹 Empty
           if (transactions.isEmpty) {
             return const Center(
               child: Text(
@@ -52,7 +50,6 @@ class TransactionHistoryScreen extends StatelessWidget {
             );
           }
 
-          // 🔹 Success
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: transactions.length,

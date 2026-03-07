@@ -7,6 +7,6 @@ class CarouselProvider extends ChangeNotifier {
 
   void updateIndex(int index) {
     _currentIndex = index;
-    notifyListeners(); // This tells Provider to rebuild the listening widgets
+    notifyListeners(); 
   }
 }

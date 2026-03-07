@@ -232,7 +232,6 @@ class UpdatePgForm extends StatelessWidget {
                                   return;
                                 }
 
-                                // bedroom/bathroom validation
                                 final bedroomStr = propertyTypeProvider.bedroom?.toString() ?? property.bedroom;
                                 final bathroomStr = propertyTypeProvider.bathroom?.toString() ?? property.bathroom;
                                 final bedroomOk = bedroomStr != null && bedroomStr != '0';

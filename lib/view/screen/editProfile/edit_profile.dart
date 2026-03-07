@@ -77,7 +77,6 @@ class EditProfile extends StatelessWidget {
                 children: [
                   const SizedBox(height: 20),
 
-                  /// Profile Image
                   ProfileImagePicker(
                     pickedImage: provider.pickedImage,
                     networkImageUrl: user.profileImage,

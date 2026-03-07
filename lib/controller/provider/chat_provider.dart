@@ -13,7 +13,6 @@ class ProviderChatProvider extends ChangeNotifier {
   late String chatId;
   late String providerId;
 
-  // ---------------- INIT CHAT ----------------
   void initChat({
     required String chatId,
     required String providerId,
@@ -23,7 +22,6 @@ class ProviderChatProvider extends ChangeNotifier {
     _listenMessages();
   }
 
-  // ---------------- SEND MESSAGE ----------------
   Future<void> sendMessage() async {
     final text = messageController.text.trim();
     if (text.isEmpty) return;
@@ -47,7 +45,6 @@ class ProviderChatProvider extends ChangeNotifier {
     });
   }
 
-  // ---------------- LISTEN MESSAGES ----------------
   void _listenMessages() {
     _firestore
         .collection('chats')

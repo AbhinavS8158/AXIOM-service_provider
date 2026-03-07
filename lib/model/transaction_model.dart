@@ -7,7 +7,7 @@ class TransactionModel {
   final String userId;
   final String amount;
   final String paymentMethod;
-  final String status; // success | failed | pending
+  final String status; 
   final DateTime createdAt;
 
   TransactionModel({
@@ -21,15 +21,14 @@ class TransactionModel {
     required this.createdAt,
   });
 
-  // ---------- DERIVED STATE ----------
+ 
   bool get isSuccess => status == 'success';
 
-  // ---------- FROM FIRESTORE ----------
   factory TransactionModel.fromFirestore(
     Map<String, dynamic> data,
     String documentId,
   ) {
-    /// ✅ Handle Timestamp / String / null safely
+    
     DateTime parsedCreatedAt;
 
     final createdAtRaw = data['createdAt'];
@@ -54,7 +53,7 @@ class TransactionModel {
     );
   }
 
-  // ---------- TO FIRESTORE ----------
+
   Map<String, dynamic> toJson() {
     return {
       'propertyId': propertyId,

@@ -23,7 +23,6 @@ class BottomNav extends StatelessWidget {
     final args = ModalRoute.of(context)?.settings.arguments;
     final bottomNavProvider = Provider.of<BottomNavProvider>(context);
 
-    // If arguments passed and it's an int, update the provider's index
     if (args is int && bottomNavProvider.currentIndex != args) {
       Future.microtask(() => bottomNavProvider.setIndex(args));
     }

@@ -14,9 +14,7 @@ class LoginController with ChangeNotifier {
   final obscurePassword = ValueNotifier<bool>(true);
 bool isLoading = false;
 
-  // ---------------------------------------------------------
-  // LOGIN USER
-  // ---------------------------------------------------------
+// usercredentials
  Future<void> loginUser(BuildContext context) async {
   if (isLoading) return;
 
@@ -72,9 +70,7 @@ bool isLoading = false;
   }
 }
 
-  // ---------------------------------------------------------
-  // GOOGLE LOGIN
-  // ---------------------------------------------------------
+//  Google
  Future<bool> googlelogin(BuildContext context) async {
   if (isLoading) return false;
 
@@ -113,7 +109,7 @@ bool isLoading = false;
       throw Exception('User is null after Google sign-in');
     }
 
-    /// ---------- SAVE TO FIRESTORE (FIXED) ----------
+
     final docRef = FirebaseFirestore.instance
         .collection('service_provider')
         .doc(user.uid);
@@ -122,14 +118,14 @@ bool isLoading = false;
 
     if (!docSnapshot.exists) {
       await docRef.set({
-        'uid': user.uid, // optional but fine
+        'uid': user.uid, 
         'name': user.displayName ?? '',
         'email': user.email ?? '',
         'phone': user.phoneNumber ?? '',
         'photoUrl': user.photoURL ?? '',
       });
     }
-    /// ----------------------------------------------
+   
 
     isLoading = false;
     notifyListeners();
@@ -154,9 +150,8 @@ void _handleError(BuildContext context, String message) {
   );
 }
 
-  // ---------------------------------------------------------
+  
   // LOGOUT USER
-  // ---------------------------------------------------------
   Future<void> logout(BuildContext context) async {
     bool confirmLogout = await showDialog(
           context: context,

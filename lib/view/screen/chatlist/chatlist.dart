@@ -19,10 +19,10 @@ class ChatListScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
 
-        // ---------------- APP BAR ----------------
+      
         appBar: const MessagesAppBar(),
 
-        // ---------------- BODY ----------------
+    
         body: ChatListBody(currentUserId: currentUserId),
       ),
     );

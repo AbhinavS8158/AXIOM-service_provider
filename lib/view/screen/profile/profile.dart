@@ -22,12 +22,11 @@ class Profile extends StatelessWidget {
         child: StreamBuilder(
           stream: profileProvider.userStream,
           builder: (context, snapshot) {
-            // 🔄 Loading
+  
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            // ❌ Error
             if (snapshot.hasError) {
                 log(snapshot.error.toString());
               return Center(
@@ -36,7 +35,7 @@ class Profile extends StatelessWidget {
               );
             }
 
-            // ❌ No Data
+ 
             if (!snapshot.hasData || snapshot.data == null) {
               return const Center(child: Text('User data not found'));
             }

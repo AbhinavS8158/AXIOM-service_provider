@@ -14,7 +14,6 @@ class MyBookingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /// Safe replacement for initState in StatelessWidget
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<BookingProvider>().listenToBookings();
     });
